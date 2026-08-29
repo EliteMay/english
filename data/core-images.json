@@ -1,0 +1,8 @@
+[
+{"word":"to","label":"方向・到達点","visual":"to","core":"→ ある到達点へ意識・物・人が向かう","desc":"『〜へ』『〜に』『〜すること』を別々に丸暗記する前に、矢印の先に到達点がある感覚を持つ。","examples":[["go to school","移動の到達点"],["give it to Tom","物の到達先"],["want to learn","意識がこれからの行為へ向く"]]},
+{"word":"from","label":"起点・分離","visual":"from","core":"← ある起点から離れてくる","desc":"場所だけでなく、時間・原因・区別でも『どこを起点に離れるか』が残る。","examples":[["come from Osaka","出発点"],["from Monday","時間の起点"],["different from A","Aから離れて違う"]]},
+{"word":"in","label":"内部","visual":"in","core":"境界のある範囲の中に入っている","desc":"箱の中だけでなく、時間・状態・集団など『ある範囲の内部』として広げる。","examples":[["in the room","空間の中"],["in 2026","時間の範囲内"],["in trouble","状態の中"]]},
+{"word":"on","label":"接触・支持","visual":"on","core":"面・基盤に接して支えられている","desc":"物理的接触から、媒体・活動・依存などの『接続された状態』へ広がる。","examples":[["on the table","面に接触"],["on TV","媒体に乗る"],["depend on you","判断の基盤がyouに乗る"]]},
+{"word":"at","label":"一点","visual":"at","core":"広がりではなく、狙った一点を指す","desc":"場所・時刻・対象を『点』として捉える感覚。","examples":[["at the station","場所を一点化"],["at seven","時刻を一点化"],["look at it","視線の狙いを一点へ"]]},
+{"word":"for","label":"対象・向き","visual":"for","core":"ある対象の方へ向ける・その対象を意識する","desc":"利益、目的、期間などへ広がるが『何に向けたものか』を入口にする。","examples":[["This is for you.","受け手・対象"],["study for the test","目的の対象"],["for three years","期間にわたる幅"]]}
+]
