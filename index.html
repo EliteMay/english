@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <title>English Worksheet Lab</title>
-  <link rel="stylesheet" href="./css/styles.css?v=0.4.0">
-  <link rel="stylesheet" href="./css/paper-v040.css?v=0.4.0">
+  <link rel="stylesheet" href="./css/styles.css?v=0.4.1">
+  <link rel="stylesheet" href="./css/paper-v041.css?v=0.4.1">
 </head>
 <body>
   <div class="app-shell">
@@ -23,7 +23,7 @@
       </nav>
       <div class="sidebar-bottom">
         <div class="autosave"><i></i><span id="saveState">この端末に自動保存</span></div>
-        <div class="version">v0.4.0</div>
+        <div class="version">v0.4.1</div>
       </div>
     </aside>
 
@@ -90,7 +90,7 @@
         </div>
         <div id="analysisEmpty" class="analysis-empty panel">
           <div class="analysis-flow"><div><strong>1</strong><span>紙に問題を解く</span></div><i>→</i><div><strong>2</strong><span>提出ZIPをChatGPTへ</span></div><i>→</i><div><strong>3</strong><span>手書きまで分析</span></div><i>→</i><div><strong>4</strong><span>弱点JSONを戻す</span></div></div>
-          <p>PNGでは、どこにS/Vを書いたか、何を括弧で外したか、どこを消して書き直したかまで確認できます。JSONは自己採点や過去結果などの補助情報です。</p>
+          <p>PNGでは、どこにS/Vを書いたか、何を括弧で外したか、どこを書き直したかを確認できます。さらにZIP内のペン履歴JSONで、消した線や書き直しの順番も分析できます。</p>
         </div>
         <div id="analysisDashboard" class="hidden"><div class="analysis-summary-grid"><article class="panel summary-panel"><span class="eyebrow">SUMMARY</span><h3>全体所見</h3><p id="analysisSummary"></p></article><article class="panel summary-panel"><span class="eyebrow">NEXT TARGET</span><h3>次に優先すること</h3><div id="nextTargets"></div></article></div><div class="subhead"><h3>判明した弱点</h3><span id="analysisDate"></span></div><div id="weaknessGrid" class="weakness-grid"></div><div class="subhead"><h3>できているところ</h3></div><div id="strengthGrid" class="strength-grid"></div></div>
         <article class="panel import-help"><span class="eyebrow">RETURN FORMAT</span><h3>ChatGPTから返すJSON形式</h3><pre id="analysisSchema"></pre></article>
@@ -98,11 +98,12 @@
     </main>
   </div>
   <div id="toast" class="toast" role="status"></div>
-  <script src="./js/core.js?v=0.4.0"></script>
-  <script src="./js/practice.js?v=0.4.0"></script>
-  <script src="./js/results-analysis.js?v=0.4.0"></script>
-  <script src="./js/ink.js?v=0.4.0"></script>
-  <script src="./js/export-zip.js?v=0.4.0"></script>
-  <script src="./js/bootstrap.js?v=0.4.0"></script>
+  <script src="./js/core.js?v=0.4.1"></script>
+  <script src="./js/practice.js?v=0.4.1"></script>
+  <script src="./js/results-analysis.js?v=0.4.1"></script>
+  <script src="./js/ink.js?v=0.4.1"></script>
+  <script src="./js/export-zip.js?v=0.4.1"></script>
+  <script src="./js/export-zip-v041.js?v=0.4.1"></script>
+  <script src="./js/bootstrap.js?v=0.4.1"></script>
 </body>
 </html>
