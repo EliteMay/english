@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <title>English Worksheet Lab</title>
-  <link rel="stylesheet" href="./css/styles.css?v=0.3.1">
+  <link rel="stylesheet" href="./css/styles.css?v=0.4.0">
+  <link rel="stylesheet" href="./css/paper-v040.css?v=0.4.0">
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-mark">E</div>
-        <div><strong>English Worksheet Lab</strong><span>問題を解いて、弱点を見つける</span></div>
+        <div><strong>English Worksheet Lab</strong><span>紙に解いて、弱点を見つける</span></div>
       </div>
       <nav class="nav">
         <button class="nav-btn active" data-view="library"><span>01</span>問題を選ぶ</button>
@@ -22,7 +23,7 @@
       </nav>
       <div class="sidebar-bottom">
         <div class="autosave"><i></i><span id="saveState">この端末に自動保存</span></div>
-        <div class="version">v0.3.1</div>
+        <div class="version">v0.4.0</div>
       </div>
     </aside>
 
@@ -31,8 +32,8 @@
         <button id="menuBtn" class="menu-btn" aria-label="メニュー">☰</button>
         <div><span class="eyebrow" id="viewEyebrow">WORKSHEETS</span><h1 id="viewTitle">問題を選ぶ</h1></div>
         <div class="top-actions">
-          <span class="progress-pill">解答済み <strong id="answeredTotal">0</strong> 問</span>
-          <button class="secondary compact" id="quickExportBtn">ChatGPT用JSON</button>
+          <span class="progress-pill">書き込み済み <strong id="answeredTotal">0</strong> 問</span>
+          <button class="secondary compact" id="quickExportBtn">ChatGPT提出ZIP</button>
         </div>
       </header>
 
@@ -40,8 +41,8 @@
         <div class="library-hero">
           <div>
             <span class="eyebrow">PDF STYLE WORKBOOK</span>
-            <h2>問題をたくさん解く。<br><em>途中の考え方まで残す。</em></h2>
-            <p>友達が作ってくれた教材①〜④の流れをベースに、S/Vから時制・長文まで問題集として並べています。1問ずつではなく、A4ワークシートを上から解く感覚です。</p>
+            <h2>紙みたいに解く。<br><em>考えた跡まで残す。</em></h2>
+            <p>ペンタブで問題文の上へ直接、S/V・丸・下線・括弧・矢印を書き込みます。同じ型の単純反復ではなく、見分ける理由が変わる問題を中心にしています。</p>
           </div>
           <div class="hero-stat-grid">
             <div><strong id="packCount">0</strong><span>問題セット</span></div>
@@ -49,122 +50,59 @@
             <div><strong id="finishedCount">0</strong><span>完了セット</span></div>
           </div>
         </div>
-
-        <div class="filter-row">
-          <div id="sourceFilters" class="chips"></div>
-          <select id="levelFilter" class="select"><option value="all">難易度すべて</option></select>
-        </div>
+        <div class="filter-row"><div id="sourceFilters" class="chips"></div><select id="levelFilter" class="select"><option value="all">難易度すべて</option></select></div>
         <div id="packGrid" class="pack-grid"></div>
       </section>
 
       <section class="view" id="view-practice">
         <div id="practiceEmpty" class="empty-card">
-          <h2>解く問題セットを選んでください</h2>
-          <p>「問題を選ぶ」からワークシートを開始すると、ここにPDF風の問題用紙が表示されます。</p>
-          <button class="primary" data-jump="library">問題を選ぶ</button>
+          <h2>解く問題セットを選んでください</h2><p>「問題を選ぶ」からワークシートを開始すると、ここに紙の問題用紙が表示されます。</p><button class="primary" data-jump="library">問題を選ぶ</button>
         </div>
-
         <div id="practiceArea" class="practice-area hidden">
-          <div class="practice-head">
-            <div>
-              <span class="eyebrow" id="practiceSource"></span>
-              <h2 id="practiceTitle"></h2>
-              <p id="practiceDesc"></p>
-            </div>
-            <div class="practice-progress"><strong id="practiceProgress">0/0</strong><span>入力済み</span></div>
-          </div>
-
+          <div class="practice-head"><div><span class="eyebrow" id="practiceSource"></span><h2 id="practiceTitle"></h2><p id="practiceDesc"></p></div><div class="practice-progress"><strong id="practiceProgress">0/0</strong><span>書き込みあり</span></div></div>
           <div class="paper-toolbar" id="paperToolbar">
-            <div class="mode-group">
-              <button class="tool-btn active" id="answerModeBtn">解答モード</button>
-              <button class="tool-btn" id="penModeBtn">ペンモード</button>
-            </div>
+            <div class="mode-group"><button class="tool-btn" id="answerModeBtn">解答モード</button><button class="tool-btn active" id="penModeBtn">ペンモード</button></div>
             <div class="pen-group" id="penGroup">
-              <button class="color-btn active" data-color="#1f2937" title="黒"></button>
-              <button class="color-btn red" data-color="#dc2626" title="赤"></button>
-              <button class="color-btn blue" data-color="#2563eb" title="青"></button>
-              <button class="color-btn green" data-color="#059669" title="緑"></button>
-              <button class="tool-btn" id="eraserBtn">消しゴム</button>
-              <button class="tool-btn" id="undoInkBtn">1つ戻す</button>
-              <button class="tool-btn danger-lite" id="clearInkBtn">ページ消去</button>
+              <button class="color-btn active" data-color="#1f2937" title="黒"></button><button class="color-btn red" data-color="#dc2626" title="赤"></button><button class="color-btn blue" data-color="#2563eb" title="青"></button><button class="color-btn green" data-color="#059669" title="緑"></button>
+              <button class="tool-btn" id="eraserBtn">消しゴム</button><button class="tool-btn" id="undoInkBtn">1つ戻す</button><button class="tool-btn danger-lite" id="clearInkBtn">ページ消去</button>
             </div>
-            <div class="page-group">
-              <button class="tool-btn" id="prevPageBtn">←</button>
-              <span><strong id="pageNow">1</strong> / <span id="pageTotal">1</span></span>
-              <button class="tool-btn" id="nextPageBtn">→</button>
-            </div>
+            <div class="page-group"><button class="tool-btn" id="prevPageBtn">←</button><span><strong id="pageNow">1</strong> / <span id="pageTotal">1</span></span><button class="tool-btn" id="nextPageBtn">→</button></div>
           </div>
-
           <div class="paper-stage">
-            <article class="paper" id="paper">
-              <div class="paper-header">
-                <div><span>English Worksheet Lab</span><strong id="paperTitle"></strong></div>
-                <div class="paper-meta"><span>名前：かいと</span><span id="paperPageLabel">Page 1</span></div>
-              </div>
-              <div id="questionList" class="question-list"></div>
-              <canvas id="inkCanvas" aria-label="ペンタブ書き込み"></canvas>
+            <article class="paper pen-mode" id="paper">
+              <div class="paper-header"><div><span>English Worksheet Lab</span><strong id="paperTitle"></strong></div><div class="paper-meta"><span>名前：かいと</span><span id="paperPageLabel">Page 1</span></div></div>
+              <div id="questionList" class="question-list"></div><canvas id="inkCanvas" aria-label="ペンタブ書き込み"></canvas>
             </article>
           </div>
-
-          <div class="practice-footer">
-            <button class="secondary" id="saveSnapshotBtn">途中経過を記録</button>
-            <button class="primary" id="finishBtn">この問題セットを採点する</button>
-          </div>
+          <div class="practice-footer"><button class="secondary" id="saveSnapshotBtn">途中経過を保存</button><button class="primary" id="finishBtn">答え合わせへ</button></div>
         </div>
       </section>
 
       <section class="view" id="view-results">
-        <div class="section-head">
-          <div><span class="eyebrow">RESULT HISTORY</span><h2>結果</h2><p>正答率だけでなく、答えを変えた履歴・途中メモ・自信度まで残します。</p></div>
-        </div>
-        <div id="latestResult"></div>
-        <div class="history-block">
-          <div class="subhead"><h3>これまでの結果</h3><span id="sessionCountLabel"></span></div>
-          <div id="resultHistory" class="result-history"></div>
-        </div>
+        <div class="section-head"><div><span class="eyebrow">RESULT HISTORY</span><h2>結果</h2><p>解答は紙面に残し、答え合わせでは○・△・×だけを記録します。詳しい読み方の分析は提出ZIPをChatGPTへ渡して行います。</p></div></div>
+        <div id="latestResult"></div><div class="history-block"><div class="subhead"><h3>これまでの結果</h3><span id="sessionCountLabel"></span></div><div id="resultHistory" class="result-history"></div></div>
       </section>
 
       <section class="view" id="view-weakness">
         <div class="section-head weakness-head">
-          <div><span class="eyebrow">CHATGPT ANALYSIS</span><h2>弱点・分析結果</h2><p>このサイトから学習JSONを書き出してChatGPTに渡し、返ってきた分析JSONをここへ読み込むと、弱点・原因・次に解く問題をまとめて見られます。</p></div>
-          <div class="analysis-actions">
-            <button class="secondary" id="downloadAnalysisInputBtn">分析用JSONを書き出す</button>
-            <button class="secondary" id="copyAnalysisPromptBtn">ChatGPTへの依頼文をコピー</button>
-            <label class="primary file-label" for="analysisImport">分析結果JSONを読み込む</label>
-            <input id="analysisImport" type="file" accept="application/json,.json" hidden>
-          </div>
+          <div><span class="eyebrow">CHATGPT ANALYSIS</span><h2>弱点・分析結果</h2><p>「ChatGPT提出ZIP」には、実際に解いた紙のPNG・学習履歴・問題と正答基準・分析依頼文が全部入ります。そのZIPをChatGPTへ渡して分析結果JSONをここへ戻します。</p></div>
+          <div class="analysis-actions"><button class="primary" id="downloadSubmissionZipBtn">ChatGPT提出ZIP</button><button class="secondary" id="downloadAnalysisInputBtn">JSONだけ</button><button class="secondary" id="copyAnalysisPromptBtn">依頼文をコピー</button><label class="primary file-label" for="analysisImport">分析結果JSONを読み込む</label><input id="analysisImport" type="file" accept="application/json,.json" hidden></div>
         </div>
-
         <div id="analysisEmpty" class="analysis-empty panel">
-          <div class="analysis-flow">
-            <div><strong>1</strong><span>問題を解く</span></div><i>→</i><div><strong>2</strong><span>学習JSONをChatGPTへ</span></div><i>→</i><div><strong>3</strong><span>分析JSONを戻す</span></div><i>→</i><div><strong>4</strong><span>弱点をここで確認</span></div>
-          </div>
-          <p>結果がまだ読み込まれていません。ChatGPTには「正誤」より、答えを変更した場所・途中メモ・自信度・長文でどのS/Vを取り違えたかを重視して分析させます。</p>
+          <div class="analysis-flow"><div><strong>1</strong><span>紙に問題を解く</span></div><i>→</i><div><strong>2</strong><span>提出ZIPをChatGPTへ</span></div><i>→</i><div><strong>3</strong><span>手書きまで分析</span></div><i>→</i><div><strong>4</strong><span>弱点JSONを戻す</span></div></div>
+          <p>PNGでは、どこにS/Vを書いたか、何を括弧で外したか、どこを消して書き直したかまで確認できます。JSONは自己採点や過去結果などの補助情報です。</p>
         </div>
-
-        <div id="analysisDashboard" class="hidden">
-          <div class="analysis-summary-grid">
-            <article class="panel summary-panel"><span class="eyebrow">SUMMARY</span><h3>全体所見</h3><p id="analysisSummary"></p></article>
-            <article class="panel summary-panel"><span class="eyebrow">NEXT TARGET</span><h3>次に優先すること</h3><div id="nextTargets"></div></article>
-          </div>
-          <div class="subhead"><h3>判明した弱点</h3><span id="analysisDate"></span></div>
-          <div id="weaknessGrid" class="weakness-grid"></div>
-          <div class="subhead"><h3>できているところ</h3></div>
-          <div id="strengthGrid" class="strength-grid"></div>
-        </div>
-
-        <article class="panel import-help">
-          <span class="eyebrow">RETURN FORMAT</span><h3>ChatGPTから返すJSON形式</h3>
-          <pre id="analysisSchema"></pre>
-        </article>
+        <div id="analysisDashboard" class="hidden"><div class="analysis-summary-grid"><article class="panel summary-panel"><span class="eyebrow">SUMMARY</span><h3>全体所見</h3><p id="analysisSummary"></p></article><article class="panel summary-panel"><span class="eyebrow">NEXT TARGET</span><h3>次に優先すること</h3><div id="nextTargets"></div></article></div><div class="subhead"><h3>判明した弱点</h3><span id="analysisDate"></span></div><div id="weaknessGrid" class="weakness-grid"></div><div class="subhead"><h3>できているところ</h3></div><div id="strengthGrid" class="strength-grid"></div></div>
+        <article class="panel import-help"><span class="eyebrow">RETURN FORMAT</span><h3>ChatGPTから返すJSON形式</h3><pre id="analysisSchema"></pre></article>
       </section>
     </main>
   </div>
   <div id="toast" class="toast" role="status"></div>
-  <script src="./js/core.js?v=0.3.1"></script>
-  <script src="./js/practice.js?v=0.3.1"></script>
-  <script src="./js/results-analysis.js?v=0.3.1"></script>
-  <script src="./js/ink.js?v=0.3.1"></script>
-  <script src="./js/bootstrap.js?v=0.3.1"></script>
+  <script src="./js/core.js?v=0.4.0"></script>
+  <script src="./js/practice.js?v=0.4.0"></script>
+  <script src="./js/results-analysis.js?v=0.4.0"></script>
+  <script src="./js/ink.js?v=0.4.0"></script>
+  <script src="./js/export-zip.js?v=0.4.0"></script>
+  <script src="./js/bootstrap.js?v=0.4.0"></script>
 </body>
 </html>
