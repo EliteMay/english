@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#0d1117">
   <title>English Structure Lab</title>
   <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/inline-ink.css">
 </head>
 <body>
   <div class="app-shell">
@@ -119,9 +120,33 @@
         </div>
 
         <div class="reading-layout">
-          <article class="worksheet panel">
-            <div class="worksheet-toolbar">
-              <div class="role-tools" id="roleTools">
+          <article class="worksheet panel inline-worksheet">
+            <div class="worksheet-toolbar inline-toolbar">
+              <div class="mode-tools">
+                <button class="ink-mode-btn active" id="inkModeBtn" type="button">
+                  <strong>✎ ペンで直接書く</strong>
+                  <span>英文の上に丸・下線・矢印・メモ</span>
+                </button>
+                <span class="mode-hint" id="inkModeHint">ペン書き込みモード</span>
+              </div>
+              <div class="confidence-control">
+                <label for="confidence">自信度 <strong id="confidenceValue">3</strong>/5</label>
+                <input id="confidence" type="range" min="1" max="5" value="3">
+              </div>
+            </div>
+
+            <div class="paper-controls">
+              <div class="pen-tools inline-pen-tools">
+                <button class="pen-tool active" data-pen-color="#1f2937" title="黒">●</button>
+                <button class="pen-tool red" data-pen-color="#dc2626" title="赤">●</button>
+                <button class="pen-tool blue" data-pen-color="#2563eb" title="青">●</button>
+                <button class="pen-tool green" data-pen-color="#059669" title="緑">●</button>
+                <button class="ghost small" id="eraserBtn">消しゴム</button>
+                <button class="ghost small" id="undoInkBtn">1つ戻す</button>
+                <button class="ghost small" id="clearInkBtn">全消去</button>
+              </div>
+              <div class="role-tools inline-role-tools" id="roleTools">
+                <span class="tool-caption">構造ラベル:</span>
                 <button class="role-btn active" data-role="S">S <span>主語</span></button>
                 <button class="role-btn" data-role="V">V <span>動詞</span></button>
                 <button class="role-btn" data-role="O">O <span>目的語</span></button>
@@ -129,13 +154,15 @@
                 <button class="role-btn" data-role="M">M <span>修飾</span></button>
                 <button class="role-btn erase-role" data-role="">× <span>解除</span></button>
               </div>
-              <div class="confidence-control">
-                <label for="confidence">自信度 <strong id="confidenceValue">3</strong>/5</label>
-                <input id="confidence" type="range" min="1" max="5" value="3">
-              </div>
             </div>
+
             <div class="passage-meta" id="passageMeta"></div>
-            <div id="passageText" class="passage-text"></div>
+            <div class="paper-sheet ink-mode" id="paperSheet">
+              <div id="passageText" class="passage-text"></div>
+              <canvas id="inkCanvas" aria-label="英文へのペンタブ書き込みレイヤー"></canvas>
+              <div class="paper-mode-badge" id="paperModeBadge">PEN</div>
+            </div>
+            <p class="paper-note">ペンモードでは英文の上へ直接書けます。S/V/O/C/Mをクリックで付けたいときは「ペンで直接書く」を押してラベルモードへ切り替えます。</p>
             <div class="reading-actions">
               <button class="secondary" id="revisionBtn">読み直しを記録</button>
               <button class="primary" id="checkReadingBtn">構造を確認する</button>
@@ -156,22 +183,6 @@
           </aside>
         </div>
 
-        <article class="draw-panel panel">
-          <div class="card-head">
-            <div><span class="eyebrow">PEN TABLET</span><h3>ペンタブ書き込み</h3></div>
-            <div class="pen-tools">
-              <button class="pen-tool active" data-pen-color="#1f2937" title="黒">●</button>
-              <button class="pen-tool red" data-pen-color="#dc2626" title="赤">●</button>
-              <button class="pen-tool blue" data-pen-color="#2563eb" title="青">●</button>
-              <button class="pen-tool green" data-pen-color="#059669" title="緑">●</button>
-              <button class="ghost small" id="eraserBtn">消しゴム</button>
-              <button class="ghost small" id="undoInkBtn">1つ戻す</button>
-              <button class="ghost small" id="clearInkBtn">全消去</button>
-            </div>
-          </div>
-          <p class="muted pen-note">筆圧対応。囲む・下線・矢印・メモなど、紙と同じように自由に書けます。タッチ操作は通常のスクロールとして扱います。</p>
-          <div class="canvas-wrap"><canvas id="inkCanvas"></canvas><div class="canvas-placeholder">ここにペンで自由に書き込む</div></div>
-        </article>
       </section>
 
       <section class="view" id="view-images">
@@ -233,5 +244,6 @@
 
   <div id="toast" class="toast" role="status"></div>
   <script type="module" src="./js/app.js"></script>
+  <script src="./js/inline-ink.js"></script>
 </body>
 </html>
