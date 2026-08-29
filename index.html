@@ -3,247 +3,168 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0d1117">
-  <title>English Structure Lab</title>
+  <meta name="theme-color" content="#111827">
+  <title>English Worksheet Lab</title>
   <link rel="stylesheet" href="./css/styles.css">
-  <link rel="stylesheet" href="./css/inline-ink.css">
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-mark">E</div>
-        <div>
-          <strong>English Structure Lab</strong>
-          <span>理解を積み上げる英語学習</span>
-        </div>
+        <div><strong>English Worksheet Lab</strong><span>問題を解いて、弱点を見つける</span></div>
       </div>
-      <nav class="nav" aria-label="メインメニュー">
-        <button class="nav-item active" data-view="home"><span>⌂</span>ホーム</button>
-        <button class="nav-item" data-view="roadmap"><span>◇</span>理解ロード</button>
-        <button class="nav-item" data-view="lesson"><span>□</span>本質レッスン</button>
-        <button class="nav-item" data-view="reading"><span>≡</span>長文・構造分析</button>
-        <button class="nav-item" data-view="images"><span>→</span>単語イメージ</button>
-        <button class="nav-item" data-view="journal"><span>✎</span>思考メモ</button>
-        <button class="nav-item" data-view="export"><span>⇩</span>ChatGPT提出</button>
+      <nav class="nav">
+        <button class="nav-btn active" data-view="library"><span>01</span>問題を選ぶ</button>
+        <button class="nav-btn" data-view="practice"><span>02</span>問題を解く</button>
+        <button class="nav-btn" data-view="results"><span>03</span>結果</button>
+        <button class="nav-btn" data-view="weakness"><span>04</span>弱点・ChatGPT分析</button>
       </nav>
-      <div class="sidebar-footer">
-        <div class="save-state"><span class="save-dot"></span><span id="saveState">この端末に自動保存</span></div>
-        <button class="ghost small" id="themeToggle">表示テーマ</button>
+      <div class="sidebar-bottom">
+        <div class="autosave"><i></i><span id="saveState">この端末に自動保存</span></div>
+        <div class="version">v0.3.0</div>
       </div>
     </aside>
 
     <main class="main">
       <header class="topbar">
-        <button class="icon-btn menu-btn" id="menuBtn" aria-label="メニュー">☰</button>
-        <div class="topbar-title">
-          <span id="viewEyebrow">TODAY</span>
-          <h1 id="viewTitle">今日の学習</h1>
-        </div>
-        <div class="topbar-actions">
-          <div class="streak-pill"><span>学習</span><strong id="sessionCount">0</strong><span>回</span></div>
-          <button class="primary compact" data-open-export>JSONを書き出す</button>
+        <button id="menuBtn" class="menu-btn" aria-label="メニュー">☰</button>
+        <div><span class="eyebrow" id="viewEyebrow">WORKSHEETS</span><h1 id="viewTitle">問題を選ぶ</h1></div>
+        <div class="top-actions">
+          <span class="progress-pill">解答済み <strong id="answeredTotal">0</strong> 問</span>
+          <button class="secondary compact" id="quickExportBtn">ChatGPT用JSON</button>
         </div>
       </header>
 
-      <section class="view active" id="view-home">
-        <div class="hero-grid">
-          <article class="hero-card">
-            <div class="hero-copy">
-              <span class="eyebrow">CORE FIRST</span>
-              <h2>訳す前に、英語の<br><em>骨格を見る。</em></h2>
-              <p>暗記ではなく、S/Vを中心に「なぜこの形になるか」を積み上げる。できる所は飛ばし、曖昧な所だけ深く学ぶ。</p>
-              <div class="hero-actions">
-                <button class="primary" id="continueBtn">続きから学ぶ</button>
-                <button class="secondary" data-view-jump="reading">長文を分析する</button>
-              </div>
-            </div>
-            <div class="sentence-demo" aria-label="英文構造デモ">
-              <div class="demo-line">
-                <span class="demo-token s">The student<small>S</small></span>
-                <span class="demo-token v">found<small>V</small></span>
-                <span class="demo-token o">the book<small>O</small></span>
-                <span class="demo-token c">useful<small>C</small></span>
-                <span class="demo-token m">yesterday.<small>M</small></span>
-              </div>
-              <div class="demo-note">S → V を先に固定すると、長い文でも中心を失いにくい。</div>
-            </div>
-          </article>
-
-          <article class="score-card">
-            <div class="card-head"><div><span class="eyebrow">ABILITY MAP</span><h3>今の理解度</h3></div><span class="muted">自動更新</span></div>
-            <div class="ability-list" id="abilityList"></div>
-          </article>
-        </div>
-
-        <div class="three-grid">
-          <article class="panel action-panel" data-view-jump="roadmap">
-            <span class="panel-icon">01</span><div><h3>理解ロード</h3><p>基礎を1個ずつ足す。理解済みは短いチェックで通過。</p></div><span class="arrow">→</span>
-          </article>
-          <article class="panel action-panel" data-view-jump="reading">
-            <span class="panel-icon">02</span><div><h3>長文・構造分析</h3><p>S/V/O/C/M、節、修飾を自分で切り分ける。</p></div><span class="arrow">→</span>
-          </article>
-          <article class="panel action-panel" data-view-jump="export">
-            <span class="panel-icon">03</span><div><h3>ChatGPTに提出</h3><p>結果だけでなく途中の変更・メモ・癖までJSON化。</p></div><span class="arrow">→</span>
-          </article>
-        </div>
-
-        <article class="panel recent-panel">
-          <div class="card-head"><div><span class="eyebrow">LEARNING TRACE</span><h3>最近の思考ログ</h3></div><button class="text-btn" data-view-jump="journal">すべて見る</button></div>
-          <div id="recentTrace" class="trace-list"></div>
-        </article>
-      </section>
-
-      <section class="view" id="view-roadmap">
-        <div class="section-intro">
-          <div><span class="eyebrow">BUILD FROM FIRST PRINCIPLES</span><h2>理解ロード</h2><p>数学の基礎を積み上げるように、前の理解を使って次へ進む。説明は基礎からだが、内容は幼くしない。</p></div>
-          <div class="legend"><span><i class="dot done"></i>理解済み</span><span><i class="dot current"></i>学習中</span><span><i class="dot"></i>未判定</span></div>
-        </div>
-        <div id="roadmapList" class="roadmap-list"></div>
-      </section>
-
-      <section class="view" id="view-lesson">
-        <div class="lesson-layout">
-          <aside class="lesson-index panel">
-            <span class="eyebrow">LESSONS</span>
-            <h3>本質レッスン</h3>
-            <div id="lessonNav" class="lesson-nav"></div>
-          </aside>
-          <div class="lesson-main" id="lessonMain"></div>
-        </div>
-      </section>
-
-      <section class="view" id="view-reading">
-        <div class="section-intro reading-intro">
-          <div><span class="eyebrow">READING LAB</span><h2>長文・構造分析</h2><p>まず訳さず、骨格を取る。途中で選び直した操作もすべて学習ログとして保存する。</p></div>
-          <select id="passageSelect" class="select"></select>
-        </div>
-
-        <div class="reading-layout">
-          <article class="worksheet panel inline-worksheet">
-            <div class="worksheet-toolbar inline-toolbar">
-              <div class="mode-tools">
-                <button class="ink-mode-btn active" id="inkModeBtn" type="button">
-                  <strong>✎ ペンで直接書く</strong>
-                  <span>英文の上に丸・下線・矢印・メモ</span>
-                </button>
-                <span class="mode-hint" id="inkModeHint">ペン書き込みモード</span>
-              </div>
-              <div class="confidence-control">
-                <label for="confidence">自信度 <strong id="confidenceValue">3</strong>/5</label>
-                <input id="confidence" type="range" min="1" max="5" value="3">
-              </div>
-            </div>
-
-            <div class="paper-controls">
-              <div class="pen-tools inline-pen-tools">
-                <button class="pen-tool active" data-pen-color="#1f2937" title="黒">●</button>
-                <button class="pen-tool red" data-pen-color="#dc2626" title="赤">●</button>
-                <button class="pen-tool blue" data-pen-color="#2563eb" title="青">●</button>
-                <button class="pen-tool green" data-pen-color="#059669" title="緑">●</button>
-                <button class="ghost small" id="eraserBtn">消しゴム</button>
-                <button class="ghost small" id="undoInkBtn">1つ戻す</button>
-                <button class="ghost small" id="clearInkBtn">全消去</button>
-              </div>
-              <div class="role-tools inline-role-tools" id="roleTools">
-                <span class="tool-caption">構造ラベル:</span>
-                <button class="role-btn active" data-role="S">S <span>主語</span></button>
-                <button class="role-btn" data-role="V">V <span>動詞</span></button>
-                <button class="role-btn" data-role="O">O <span>目的語</span></button>
-                <button class="role-btn" data-role="C">C <span>補語</span></button>
-                <button class="role-btn" data-role="M">M <span>修飾</span></button>
-                <button class="role-btn erase-role" data-role="">× <span>解除</span></button>
-              </div>
-            </div>
-
-            <div class="passage-meta" id="passageMeta"></div>
-            <div class="paper-sheet ink-mode" id="paperSheet">
-              <div id="passageText" class="passage-text"></div>
-              <canvas id="inkCanvas" aria-label="英文へのペンタブ書き込みレイヤー"></canvas>
-              <div class="paper-mode-badge" id="paperModeBadge">PEN</div>
-            </div>
-            <p class="paper-note">ペンモードでは英文の上へ直接書けます。S/V/O/C/Mをクリックで付けたいときは「ペンで直接書く」を押してラベルモードへ切り替えます。</p>
-            <div class="reading-actions">
-              <button class="secondary" id="revisionBtn">読み直しを記録</button>
-              <button class="primary" id="checkReadingBtn">構造を確認する</button>
-            </div>
-            <div id="readingFeedback" class="feedback hidden"></div>
-          </article>
-
-          <aside class="thinking-panel panel">
-            <span class="eyebrow">THINKING TRACE</span>
-            <h3>途中の考えを残す</h3>
-            <label class="field-label">最初にどう読んだ？</label>
-            <textarea id="firstHypothesis" rows="5" placeholder="例：最初は that 以下まで全部目的語だと思った。"></textarea>
-            <label class="field-label">どこで迷った？</label>
-            <textarea id="confusionMemo" rows="4" placeholder="例：which の後ろに動詞があるので、本動詞と区別できなかった。"></textarea>
-            <label class="field-label">読み直して何を変えた？</label>
-            <textarea id="correctionMemo" rows="4" placeholder="例：主節のVを先に固定してから関係詞節を別枠にした。"></textarea>
-            <div class="mini-stats" id="readingStats"></div>
-          </aside>
-        </div>
-
-      </section>
-
-      <section class="view" id="view-images">
-        <div class="section-intro">
-          <div><span class="eyebrow">CORE IMAGE</span><h2>単語を「日本語訳」ではなくイメージで持つ</h2><p>まず核となる感覚を作り、例文ごとの日本語訳はその後に置く。同じ感覚が別の使い方にも残っているかを見る。</p></div>
-        </div>
-        <div id="imageWordGrid" class="image-word-grid"></div>
-      </section>
-
-      <section class="view" id="view-journal">
-        <div class="section-intro">
-          <div><span class="eyebrow">LEARNING JOURNAL</span><h2>思考メモ</h2><p>「分からなかった」だけで終わらせず、何をどう考えたかを残す。ChatGPT提出JSONにもそのまま入る。</p></div>
-          <button class="primary" id="addJournalBtn">新しいメモ</button>
-        </div>
-        <div class="journal-compose panel" id="journalCompose">
-          <input id="journalTitle" type="text" placeholder="タイトル（例：現在完了の been が分からない）">
-          <textarea id="journalBody" rows="7" placeholder="疑問、勘違いしていた読み方、自分なりの理解、先生やChatGPTに聞きたいことなど"></textarea>
-          <div class="journal-actions"><select id="journalType" class="select"><option value="question">疑問</option><option value="mistake">間違い方</option><option value="insight">分かったこと</option><option value="rule">自分用ルール</option></select><button class="primary" id="saveJournalBtn">メモを保存</button></div>
-        </div>
-        <div id="journalList" class="journal-list"></div>
-      </section>
-
-      <section class="view" id="view-export">
-        <div class="section-intro">
-          <div><span class="eyebrow">CHATGPT HANDOFF</span><h2>ChatGPTに学習過程を渡す</h2><p>スコアだけでなく、途中の変更・誤読・自信度・メモ・ペン入力まで含めて書き出す。</p></div>
-        </div>
-        <div class="export-grid">
-          <article class="panel export-card">
-            <span class="export-number">01</span><h3>学習データJSON</h3><p>このファイルをChatGPTに添付すると、現在の理解度と途中の考え方をまとめて確認できます。</p>
-            <div class="export-summary" id="exportSummary"></div>
-            <button class="primary full" id="downloadJsonBtn">learning-data.json を保存</button>
-          </article>
-          <article class="panel export-card">
-            <span class="export-number">02</span><h3>ChatGPTへの依頼文</h3><p>JSONと一緒に渡すための指示文。今後サイトを調整するときにも使えます。</p>
-            <textarea id="handoffPrompt" rows="12" readonly></textarea>
-            <button class="secondary full" id="copyPromptBtn">依頼文をコピー</button>
-          </article>
-          <article class="panel export-card">
-            <span class="export-number">03</span><h3>データを戻す</h3><p>別端末へ移す場合や、ChatGPTで編集した学習設定を読み戻す場合に使います。</p>
-            <label class="file-drop" for="importJson"><strong>JSONを選択</strong><span>learning-data.json</span></label>
-            <input id="importJson" type="file" accept="application/json,.json" hidden>
-            <button class="danger-text" id="resetDataBtn">この端末の学習データを初期化</button>
-          </article>
-        </div>
-        <article class="panel schema-panel">
-          <div class="card-head"><div><span class="eyebrow">WHAT CHATGPT CAN SEE</span><h3>書き出される内容</h3></div></div>
-          <div class="schema-grid">
-            <div><strong>mastery</strong><span>単元ごとの理解度・試行回数</span></div>
-            <div><strong>attemptHistory</strong><span>答えを変えた過程と正誤</span></div>
-            <div><strong>readingAnnotations</strong><span>S/V/O/C/Mの指定と変更履歴</span></div>
-            <div><strong>thinkingNotes</strong><span>最初の解釈・迷い・修正内容</span></div>
-            <div><strong>penStrokes</strong><span>ペンタブで書いた線の履歴</span></div>
-            <div><strong>journal</strong><span>疑問・誤読・自分用ルール</span></div>
+      <section class="view active" id="view-library">
+        <div class="library-hero">
+          <div>
+            <span class="eyebrow">PDF STYLE WORKBOOK</span>
+            <h2>問題をたくさん解く。<br><em>途中の考え方まで残す。</em></h2>
+            <p>友達が作ってくれた教材①〜④の流れをベースに、S/Vから時制・長文まで問題集として並べています。1問ずつではなく、A4ワークシートを上から解く感覚です。</p>
           </div>
+          <div class="hero-stat-grid">
+            <div><strong id="packCount">0</strong><span>問題セット</span></div>
+            <div><strong id="questionCount">0</strong><span>収録問題</span></div>
+            <div><strong id="finishedCount">0</strong><span>完了セット</span></div>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <div id="sourceFilters" class="chips"></div>
+          <select id="levelFilter" class="select"><option value="all">難易度すべて</option></select>
+        </div>
+        <div id="packGrid" class="pack-grid"></div>
+      </section>
+
+      <section class="view" id="view-practice">
+        <div id="practiceEmpty" class="empty-card">
+          <h2>解く問題セットを選んでください</h2>
+          <p>「問題を選ぶ」からワークシートを開始すると、ここにPDF風の問題用紙が表示されます。</p>
+          <button class="primary" data-jump="library">問題を選ぶ</button>
+        </div>
+
+        <div id="practiceArea" class="practice-area hidden">
+          <div class="practice-head">
+            <div>
+              <span class="eyebrow" id="practiceSource"></span>
+              <h2 id="practiceTitle"></h2>
+              <p id="practiceDesc"></p>
+            </div>
+            <div class="practice-progress"><strong id="practiceProgress">0/0</strong><span>入力済み</span></div>
+          </div>
+
+          <div class="paper-toolbar" id="paperToolbar">
+            <div class="mode-group">
+              <button class="tool-btn active" id="answerModeBtn">解答モード</button>
+              <button class="tool-btn" id="penModeBtn">ペンモード</button>
+            </div>
+            <div class="pen-group" id="penGroup">
+              <button class="color-btn active" data-color="#1f2937" title="黒"></button>
+              <button class="color-btn red" data-color="#dc2626" title="赤"></button>
+              <button class="color-btn blue" data-color="#2563eb" title="青"></button>
+              <button class="color-btn green" data-color="#059669" title="緑"></button>
+              <button class="tool-btn" id="eraserBtn">消しゴム</button>
+              <button class="tool-btn" id="undoInkBtn">1つ戻す</button>
+              <button class="tool-btn danger-lite" id="clearInkBtn">ページ消去</button>
+            </div>
+            <div class="page-group">
+              <button class="tool-btn" id="prevPageBtn">←</button>
+              <span><strong id="pageNow">1</strong> / <span id="pageTotal">1</span></span>
+              <button class="tool-btn" id="nextPageBtn">→</button>
+            </div>
+          </div>
+
+          <div class="paper-stage">
+            <article class="paper" id="paper">
+              <div class="paper-header">
+                <div><span>English Worksheet Lab</span><strong id="paperTitle"></strong></div>
+                <div class="paper-meta"><span>名前：かいと</span><span id="paperPageLabel">Page 1</span></div>
+              </div>
+              <div id="questionList" class="question-list"></div>
+              <canvas id="inkCanvas" aria-label="ペンタブ書き込み"></canvas>
+            </article>
+          </div>
+
+          <div class="practice-footer">
+            <button class="secondary" id="saveSnapshotBtn">途中経過を記録</button>
+            <button class="primary" id="finishBtn">この問題セットを採点する</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-results">
+        <div class="section-head">
+          <div><span class="eyebrow">RESULT HISTORY</span><h2>結果</h2><p>正答率だけでなく、答えを変えた履歴・途中メモ・自信度まで残します。</p></div>
+        </div>
+        <div id="latestResult"></div>
+        <div class="history-block">
+          <div class="subhead"><h3>これまでの結果</h3><span id="sessionCountLabel"></span></div>
+          <div id="resultHistory" class="result-history"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-weakness">
+        <div class="section-head weakness-head">
+          <div><span class="eyebrow">CHATGPT ANALYSIS</span><h2>弱点・分析結果</h2><p>このサイトから学習JSONを書き出してChatGPTに渡し、返ってきた分析JSONをここへ読み込むと、弱点・原因・次に解く問題をまとめて見られます。</p></div>
+          <div class="analysis-actions">
+            <button class="secondary" id="downloadAnalysisInputBtn">分析用JSONを書き出す</button>
+            <button class="secondary" id="copyAnalysisPromptBtn">ChatGPTへの依頼文をコピー</button>
+            <label class="primary file-label" for="analysisImport">分析結果JSONを読み込む</label>
+            <input id="analysisImport" type="file" accept="application/json,.json" hidden>
+          </div>
+        </div>
+
+        <div id="analysisEmpty" class="analysis-empty panel">
+          <div class="analysis-flow">
+            <div><strong>1</strong><span>問題を解く</span></div><i>→</i><div><strong>2</strong><span>学習JSONをChatGPTへ</span></div><i>→</i><div><strong>3</strong><span>分析JSONを戻す</span></div><i>→</i><div><strong>4</strong><span>弱点をここで確認</span></div>
+          </div>
+          <p>結果がまだ読み込まれていません。ChatGPTには「正誤」より、答えを変更した場所・途中メモ・自信度・長文でどのS/Vを取り違えたかを重視して分析させます。</p>
+        </div>
+
+        <div id="analysisDashboard" class="hidden">
+          <div class="analysis-summary-grid">
+            <article class="panel summary-panel"><span class="eyebrow">SUMMARY</span><h3>全体所見</h3><p id="analysisSummary"></p></article>
+            <article class="panel summary-panel"><span class="eyebrow">NEXT TARGET</span><h3>次に優先すること</h3><div id="nextTargets"></div></article>
+          </div>
+          <div class="subhead"><h3>判明した弱点</h3><span id="analysisDate"></span></div>
+          <div id="weaknessGrid" class="weakness-grid"></div>
+          <div class="subhead"><h3>できているところ</h3></div>
+          <div id="strengthGrid" class="strength-grid"></div>
+        </div>
+
+        <article class="panel import-help">
+          <span class="eyebrow">RETURN FORMAT</span><h3>ChatGPTから返すJSON形式</h3>
+          <pre id="analysisSchema"></pre>
         </article>
       </section>
     </main>
   </div>
-
   <div id="toast" class="toast" role="status"></div>
-  <script type="module" src="./js/app.js"></script>
-  <script src="./js/inline-ink.js"></script>
+  <script src="./js/core.js"></script>
+  <script src="./js/practice.js"></script>
+  <script src="./js/results-analysis.js"></script>
+  <script src="./js/ink.js"></script>
+  <script src="./js/bootstrap.js"></script>
 </body>
 </html>
