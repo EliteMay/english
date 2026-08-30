@@ -1,0 +1,26 @@
+{
+  "id":"foundation-sv",
+  "title":"S/Vを本当に見抜く",
+  "source":"教材①ベース",
+  "level":"基礎→標準",
+  "focus":"S/V・節",
+  "description":"同じ短文の反復ではなく、前置詞句・分詞・関係詞節・受動態・倒置まで少しずつ条件を変えて主節を見抜く。",
+  "paperRevision":"legacy-v051",
+  "questions":[
+    {"id":"sv01","type":"fields","prompt":"S（主語）とV（動詞）を書いてください。","sentence":"I study English.","fields":[{"id":"s","label":"S","answers":["I"]},{"id":"v","label":"V","answers":["study"]}],"skill":"sv","note":""},
+    {"id":"sv02","type":"fields","prompt":"前置詞句をいったん外して、主節のS/Vを書いてください。","sentence":"My brother works at a restaurant near the station.","fields":[{"id":"s","label":"S","answers":["My brother"]},{"id":"v","label":"V","answers":["works"]}],"skill":"sv","note":""},
+    {"id":"sv03","type":"fields","prompt":"「in the front row」に引っ張られず、文の中心S/Vを書いてください。","sentence":"The students in the front row look tired.","fields":[{"id":"s","label":"S","answers":["The students"]},{"id":"v","label":"V","answers":["look"]}],"skill":"sv","note":""},
+    {"id":"sv04","type":"fields","prompt":"受動態のVはまとまりで書いてください。","sentence":"A box of old photographs was found in the attic.","fields":[{"id":"s","label":"S","answers":["A box of old photographs"]},{"id":"v","label":"V","answers":["was found"]}],"skill":"sv","note":""},
+    {"id":"sv05","type":"fields","prompt":"動名詞句が主語です。S/Vを書いてください。","sentence":"Running every morning helps me concentrate.","fields":[{"id":"s","label":"S","answers":["Running every morning"]},{"id":"v","label":"V","answers":["helps"]}],"skill":"sv","note":""},
+    {"id":"sv06","type":"fields","prompt":"to不定詞句が主語です。S/Vを書いてください。","sentence":"To understand the rule takes time.","fields":[{"id":"s","label":"S","answers":["To understand the rule"]},{"id":"v","label":"V","answers":["takes"]}],"skill":"sv","note":""},
+    {"id":"sv07","type":"fields","prompt":"分詞の修飾を外して、主節S/Vを書いてください。","sentence":"The boy wearing a red cap is waiting near the gate.","fields":[{"id":"s","label":"S","answers":["The boy"]},{"id":"v","label":"V","answers":["is waiting"]}],"skill":"sv","note":""},
+    {"id":"sv08","type":"fields","prompt":"関係詞節のVと主節Vを区別してください。主節S/Vを書いてください。","sentence":"The students who arrived early were waiting outside.","fields":[{"id":"s","label":"主節S","answers":["The students"]},{"id":"v","label":"主節V","answers":["were waiting"]}],"skill":"clauses","note":"who arrived early は students を説明する節。"},
+    {"id":"sv09","type":"fields","prompt":"動詞らしい形が複数あります。主節のS/Vをまとまりで書いてください。","sentence":"The report that you sent yesterday has already been checked.","fields":[{"id":"s","label":"主節S","answers":["The report"]},{"id":"v","label":"主節V","answers":["has already been checked"]}],"skill":"clauses","note":""},
+    {"id":"sv10","type":"fields","prompt":"文頭の副詞節をいったん外して、主節S/Vを書いてください。","sentence":"After the meeting ended, everyone went home.","fields":[{"id":"s","label":"主節S","answers":["everyone"]},{"id":"v","label":"主節V","answers":["went"]}],"skill":"clauses","note":""},
+    {"id":"sv11","type":"fields","prompt":"名詞節全体がSです。S/Vを書いてください。","sentence":"What he said surprised everyone in the room.","fields":[{"id":"s","label":"S","answers":["What he said"]},{"id":"v","label":"V","answers":["surprised"]}],"skill":"clauses","note":""},
+    {"id":"sv12","type":"fields","prompt":"why節を名詞の説明として外し、主節S/Vを書いてください。","sentence":"The reason why she left remains unclear.","fields":[{"id":"s","label":"主節S","answers":["The reason"]},{"id":"v","label":"V","answers":["remains"]}],"skill":"clauses","note":""},
+    {"id":"sv13","type":"fields","prompt":"語順が通常と逆です。意味上のS/Vを書いてください。","sentence":"In the corner of the room stood a tall wooden cabinet.","fields":[{"id":"s","label":"S","answers":["a tall wooden cabinet"]},{"id":"v","label":"V","answers":["stood"]}],"skill":"sv","note":""},
+    {"id":"sv14","type":"fields","prompt":"複合主語を一まとまりとしてS/Vを書いてください。","sentence":"Neither the teacher nor the students were ready for the change.","fields":[{"id":"s","label":"S","answers":["Neither the teacher nor the students"]},{"id":"v","label":"V","answers":["were"]}],"skill":"sv","note":""},
+    {"id":"sv15","type":"manual","prompt":"この文で arrived を主節Vにしてはいけない理由を、自分の言葉で説明してください。","sentence":"The students who arrived early were waiting outside.","skill":"clauses","guide":"who arrived early は students を説明する小さな文で、文全体の中心は The students were waiting。","lines":5,"note":""}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "english-worksheet-lab",
+  "private": true,
+  "version": "0.6.0",
+  "scripts": {
+    "test:static": "node tests/validate.mjs",
+    "test:e2e": "playwright test --project=firefox"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}

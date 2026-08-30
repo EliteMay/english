@@ -1,0 +1,23 @@
+{
+  "id":"sv-phrase-boundary",
+  "title":"補強｜S/Vを1語ではなく『かたまり』で取る",
+  "source":"ChatGPT弱点補強",
+  "level":"基礎→標準",
+  "focus":"主語句の範囲・動詞のまとまり",
+  "description":"実際の解答で見えた『S/Vを1語だけで切る』癖を直す専用セット。Sは主語として働く語句全体、Vは進行・受動・完了・助動詞を含むまとまりとして取る。",
+  "paperRevision":"legacy-v051",
+  "questions":[
+    {"id":"pb01","type":"fields","prompt":"Sは名詞1語ではなく、主語として働く範囲全体を書いてください。","sentence":"A group of students from my class is waiting outside.","fields":[{"id":"s","label":"S全体","answers":["A group of students from my class"]},{"id":"v","label":"V全体","answers":["is waiting"]}],"skill":"phrase-boundary","note":"中心語は group だが、Sとして働く範囲は A group of students from my class 全体。"},
+    {"id":"pb02","type":"choice","prompt":"この文のVを『まとまり』で取るならどれ？","sentence":"The old bridge was repaired last month.","choices":["was","repaired","was repaired","last month"],"answer":"was repaired","skill":"verb-group","note":"受動態 be + 過去分詞を分けない。"},
+    {"id":"pb03","type":"fields","prompt":"動名詞句全体をSとして書いてください。","sentence":"Reading difficult sentences slowly helps me notice the structure.","fields":[{"id":"s","label":"S全体","answers":["Reading difficult sentences slowly"]},{"id":"v","label":"V全体","answers":["helps"]}],"skill":"phrase-boundary","note":"Reading だけで切らず、その動作の中身までSに含める。"},
+    {"id":"pb04","type":"fields","prompt":"to不定詞句全体をSとして書いてください。","sentence":"To separate the main clause from the modifiers takes practice.","fields":[{"id":"s","label":"S全体","answers":["To separate the main clause from the modifiers"]},{"id":"v","label":"V全体","answers":["takes"]}],"skill":"phrase-boundary","note":"To separate だけでなく、その目的語・修飾まで含めて1つのS。"},
+    {"id":"pb05","type":"choice","prompt":"進行形のVをまとまりで選んでください。","sentence":"The students near the window are talking quietly.","choices":["are","talking","are talking","quietly"],"answer":"are talking","skill":"verb-group","note":"are は時制・一致、talking は動作内容。2語でVのまとまり。"},
+    {"id":"pb06","type":"choice","prompt":"現在完了のVをまとまりで選んでください。","sentence":"My sister has finished the report already.","choices":["has","finished","has finished","has finished the report"],"answer":"has finished","skill":"verb-group","note":"has だけでは完了の意味を作れない。"},
+    {"id":"pb07","type":"choice","prompt":"完了＋受動のVをまとまりで選んでください。","sentence":"The final schedule has been changed twice.","choices":["has","been","changed","has been changed"],"answer":"has been changed","skill":"verb-group","note":"has + been + changed が1つの動詞グループ。"},
+    {"id":"pb08","type":"fields","prompt":"関係詞節を外して、主節S/Vを『範囲』で書いてください。","sentence":"The student who sits behind me has been absent this week.","fields":[{"id":"s","label":"主節S全体","answers":["The student"]},{"id":"v","label":"主節V全体","answers":["has been absent"]}],"skill":"clauses","note":"who sits behind me は student の説明。主節Vは has だけではなく has been absent まで。"},
+    {"id":"pb09","type":"fields","prompt":"前置詞句にある名詞をSと誤認しないでください。","sentence":"A box of letters from my grandfather was sitting on the desk.","fields":[{"id":"s","label":"S全体","answers":["A box of letters from my grandfather"]},{"id":"v","label":"V全体","answers":["was sitting"]}],"skill":"phrase-boundary","note":"letters / grandfather はS内部の名詞。文全体のSは A box ... 全体。"},
+    {"id":"pb10","type":"choice","prompt":"助動詞を含むVのまとまりはどれ？","sentence":"The plan might have changed by tomorrow.","choices":["might","have","changed","might have changed"],"answer":"might have changed","skill":"verb-group","note":"助動詞 + have + 過去分詞を1つのVとして見る。"},
+    {"id":"pb11","type":"fields","prompt":"主語の中心語とS全体を区別してください。","sentence":"The color of these old photographs has faded over time.","fields":[{"id":"head","label":"Sの中心語","answers":["color","The color"]},{"id":"s","label":"S全体","answers":["The color of these old photographs"]},{"id":"v","label":"V全体","answers":["has faded"]}],"skill":"phrase-boundary","note":"photographs は動詞の直前に近くてもSの中心語ではない。"},
+    {"id":"pb12","type":"manual","prompt":"自分用ルールとして『SとVをどこまで書くか』を2行でまとめてください。","sentence":"","skill":"phrase-boundary","guide":"S=主語として働く語句・節の範囲全体。V=助動詞・be/have・分詞など、時制/進行/受動/完了を作る動詞のまとまり。","lines":4,"note":""}
+  ]
+}
