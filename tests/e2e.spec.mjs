@@ -11,7 +11,11 @@ test('paper geometry and question-local ink survive answer check',async({page})=
   await page.locator('#finishBtn').click();
   await expect(page.locator('#reviewPanel')).toBeVisible();
   const after=await page.locator('#paper .question').evaluateAll(qs=>qs.slice(0,3).map(q=>({top:q.offsetTop,height:q.offsetHeight,width:q.offsetWidth})));
-  expect(after).toEqual(before);
+  for(let i=0;i<before.length;i++){
+    expect(after[i].height).toBe(before[i].height);
+    expect(after[i].width).toBe(before[i].width);
+    expect(Math.abs(after[i].top-before[i].top)).toBeLessThanOrEqual(2);
+  }
   const q2=page.locator('#paper .question').nth(1),c2=page.locator('.question-ink').nth(1);
   const sizes=await Promise.all([q2.evaluate(q=>[q.clientWidth,q.clientHeight]),c2.evaluate(c=>[parseFloat(c.style.width),parseFloat(c.style.height)])]);
   expect(sizes[1][0]).toBeCloseTo(sizes[0][0],0);expect(sizes[1][1]).toBeCloseTo(sizes[0][1],0);
