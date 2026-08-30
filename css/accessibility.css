@@ -1,0 +1,11 @@
+/* Accessibility and state feedback shared across the app. */
+:where(button,a,input,select,textarea,summary,[tabindex]):focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+#saveState[data-status="ok"]{color:#9dd8b2}
+#saveState[data-status="warning"]{color:#fde68a;font-weight:800}
+#saveState[data-status="error"]{color:#fecaca;font-weight:800}
+button[aria-pressed="true"]{border-color:var(--accent)}
+
+@media(prefers-reduced-motion:reduce){
+  html:not([data-reduce-motion="0"]) *,html:not([data-reduce-motion="0"]) *::before,html:not([data-reduce-motion="0"]) *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+html[data-reduce-motion="1"] *,html[data-reduce-motion="1"] *::before,html[data-reduce-motion="1"] *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
