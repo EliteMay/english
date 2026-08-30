@@ -1,17 +1,39 @@
 {
-  "version":1,
-  "principle":"英語を訳の暗記ではなく、文の構造と核イメージを基礎から順番に積み上げて理解する。",
-  "sourceMaterials":["英語文法ワークシート①: S/V/Oと文の骨格","英語文法ワークシート②: 5文型","英語文法ワークシート③: 動詞・語法・長い文の骨格","英語文法ワークシート④: 時制・完了・長文時制分析"],
-  "steps":[
-    {"id":"center","order":1,"title":"文には中心がある","summary":"飾りを外して、文を成立させる中心を探す。","lessonId":"center"},
-    {"id":"sv","order":2,"title":"S と V を固定する","summary":"誰・何について、何を述べているか。まず骨格だけを見る。","lessonId":"sv"},
-    {"id":"vo","order":3,"title":"V の後ろを見る","summary":"目的語・補語・修飾語を『動詞との関係』で見分ける。","lessonId":"vo"},
-    {"id":"patterns","order":4,"title":"5文型を意味の構造で理解","summary":"記号暗記ではなく、S=C / O=C / 渡す構造として理解する。","lessonId":"patterns"},
-    {"id":"verbs","order":5,"title":"動詞が後ろの形を決める","summary":"同じ単語でも動詞の使われ方で文型や意味が変わる。","lessonId":"verbs"},
-    {"id":"modifiers","order":6,"title":"修飾を外して骨格を残す","summary":"長い文を短い中心文まで削り、後から情報を戻す。","lessonId":"modifiers"},
-    {"id":"tense","order":7,"title":"時制を時間のイメージで理解","summary":"現在・進行・過去・完了を日本語訳でなく時間軸で見る。","lessonId":"tense"},
-    {"id":"core-images","order":8,"title":"前置詞・基本語を核イメージで持つ","summary":"to=→ のように、訳より先に空間・方向の感覚を作る。","lessonId":"core-images"},
-    {"id":"clauses","order":9,"title":"節の中にも S/V がある","summary":"主節と従属節を分け、本動詞を見失わない。","lessonId":"clauses"},
-    {"id":"reading","order":10,"title":"長文で骨格を取り続ける","summary":"文ごとの中心をつなぎ、意味の流れを構造から読む。","lessonId":"reading"}
-  ]
+  "version":2,
+  "phases":[
+    {"id":"phase-1","title":"骨格を取る","summary":"S/VとO/Cを、語の意味より先に構造として見抜く","packIds":["foundation-sv","structure-patterns"]},
+    {"id":"phase-2","title":"動詞とイメージ","summary":"動詞が作る関係と、to・前置詞の核イメージをつなぐ","packIds":["verb-meaning","to-ing-core","core-prepositions","core-image-extended"]},
+    {"id":"phase-3","title":"節と時間","summary":"修飾・節を外し、時制を時間の見え方として理解する","packIds":["modifiers-clauses","tense-time"]},
+    {"id":"phase-4","title":"構造を使う","summary":"語順・誤文修正・非定形・混合診断で知識を判断へ変える","packIds":["sentence-building","grammar-repair","structure-traps","mixed-diagnostic"]},
+    {"id":"phase-5","title":"長文へ統合","summary":"一文の骨格から、段落の因果・対比・指示語まで追う","packIds":["long-reading","paragraph-reading"]}
+  ],
+  "packs":{
+    "foundation-sv":{"order":10,"phase":"骨格を取る","minutes":28,"skills":["sv","clauses"],"tags":["主節","関係詞","分詞","受動態","倒置"]},
+    "structure-patterns":{"order":20,"phase":"骨格を取る","minutes":28,"skills":["patterns","oc"],"tags":["O=C","S=C","SVOO","SVOC"]},
+    "verb-meaning":{"order":30,"phase":"動詞とイメージ","minutes":24,"skills":["verb-pattern","svoc"],"tags":["run","grow","look","sound","keep","call"]},
+    "to-ing-core":{"order":40,"phase":"動詞とイメージ","minutes":24,"skills":["verb-form","core-image"],"tags":["to","ing","remember","stop","try"]},
+    "core-prepositions":{"order":50,"phase":"動詞とイメージ","minutes":22,"skills":["prepositions","core-image"],"tags":["to","from","in","on","at","for"]},
+    "core-image-extended":{"order":60,"phase":"動詞とイメージ","minutes":26,"skills":["prepositions","core-image"],"tags":["through","across","over","under","into","with","by"]},
+    "modifiers-clauses":{"order":70,"phase":"節と時間","minutes":30,"skills":["clauses","modifiers"],"tags":["関係詞","分詞","that節","副詞節"]},
+    "tense-time":{"order":80,"phase":"節と時間","minutes":30,"skills":["tense","perfect"],"tags":["現在形","進行形","完了形","未来"]},
+    "sentence-building":{"order":90,"phase":"構造を使う","minutes":28,"skills":["word-order","sentence-build"],"tags":["語順","節配置","SVOO","SVOC"]},
+    "grammar-repair":{"order":100,"phase":"構造を使う","minutes":32,"skills":["grammar-repair","verb-form"],"tags":["誤文修正","一致","時制","語法"]},
+    "structure-traps":{"order":110,"phase":"構造を使う","minutes":32,"skills":["clauses","verb-form"],"tags":["finite verb","非定形","倒置","名詞節","同格節"]},
+    "mixed-diagnostic":{"order":120,"phase":"構造を使う","minutes":35,"skills":["diagnostic","clauses"],"tags":["総合診断","弱点確認","混合"]},
+    "long-reading":{"order":130,"phase":"長文へ統合","minutes":38,"skills":["reading-structure","clauses"],"tags":["長文","主節","従属節"]},
+    "paragraph-reading":{"order":140,"phase":"長文へ統合","minutes":45,"skills":["paragraph","reading-inference"],"tags":["段落","因果","対比","指示語","要約"]}
+  },
+  "skills":{
+    "sv":{"label":"S/V","description":"文全体の中心となる主語と有限動詞を取る"},
+    "patterns":{"label":"5文型","description":"語順だけでなく意味関係からO/Cを判定する"},
+    "clauses":{"label":"節","description":"主節・従属節・名詞節・関係詞節の境界を取る"},
+    "verb-pattern":{"label":"動詞と文型","description":"同じ動詞でも文中の意味で構造が変わることを捉える"},
+    "verb-form":{"label":"to / ing","description":"非定形の時間・方向イメージを捉える"},
+    "tense":{"label":"時制","description":"形の暗記でなく話し手の時間視点を捉える"},
+    "prepositions":{"label":"前置詞","description":"核となる空間イメージから意味を広げる"},
+    "word-order":{"label":"語順","description":"S→Vを軸に英文を組み立てる"},
+    "grammar-repair":{"label":"誤文修正","description":"衝突している文法規則を特定して修正する"},
+    "reading-structure":{"label":"長文構造","description":"一文の主節・従属節を紙面上で分ける"},
+    "paragraph":{"label":"段落読解","description":"複数文の因果・対比・指示語を追う"}
+  }
 }
