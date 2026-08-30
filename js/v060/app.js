@@ -2,6 +2,7 @@ import {APP,state,prefs,saveState,setSaveListener,updatePrefs,initializeMigratio
 import {loadCatalog,catalog,getCurrentPack,getLegacyPack} from './data.js';
 import {initLibrary,renderLibrary} from './library.js';
 import {initPractice,renderPractice,flushPracticeTimer} from './practice.js';
+import {initReviewLayout} from './review-layout.js';
 import {initResults,renderResults,mistakeQuestions} from './results.js';
 import {pen,setPenTool,setPenColor,setPenSize,undoInk,redoInk,clearPageInk,resizeInk} from './ink.js';
 import {downloadSubmission,analysisPrompt} from './export.js';
@@ -13,7 +14,7 @@ let currentView='library';
 
 async function main(){
   setSaveListener((ok)=>{$('#saveState').textContent=ok?`保存済み ${new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})}`:'保存失敗';});
-  await loadCatalog();await initializeMigration({getCurrentPack,getLegacyPack});applyPrefs();bindShell();await initPractice({onOpenResults:()=>openView('results'),onRenderLibrary:renderLibrary});initLibrary({onOpenPractice:()=>openView('practice')});initResults({onPractice:()=>openView('practice')});renderLibrary();await renderPractice();renderResults();renderAnalysis();renderSchema();updateHeader();saveState(true);
+  await loadCatalog();await initializeMigration({getCurrentPack,getLegacyPack});applyPrefs();bindShell();await initPractice({onOpenResults:()=>openView('results'),onRenderLibrary:renderLibrary});initReviewLayout();initLibrary({onOpenPractice:()=>openView('practice')});initResults({onPractice:()=>openView('practice')});renderLibrary();await renderPractice();renderResults();renderAnalysis();renderSchema();updateHeader();saveState(true);
 }
 
 function bindShell(){
