@@ -17,6 +17,29 @@ test('paper geometry and question-local ink survive answer check',async({page})=
   expect(sizes[1][0]).toBeCloseTo(sizes[0][0],0);expect(sizes[1][1]).toBeCloseTo(sizes[0][1],0);
 });
 
+test('answer check stays two-pane without page overflow or floating footer',async({page})=>{
+  await page.goto('/');
+  await page.locator('[data-start-pack]').first().click();
+  await page.locator('#finishBtn').click();
+  await expect(page.locator('#reviewPanel')).toBeVisible();
+  await expect(page.locator('.review-finish-proxy')).toBeVisible();
+  await expect(page.locator('.practice-footer')).toBeHidden();
+  const metrics=await page.evaluate(()=>({
+    viewport:innerWidth,
+    pageWidth:document.documentElement.scrollWidth,
+    paperWidth:document.querySelector('#paper')?.getBoundingClientRect().width||0,
+    paperPaneWidth:document.querySelector('.paper-pane')?.getBoundingClientRect().width||0,
+    reviewWidth:document.querySelector('#reviewPanel')?.getBoundingClientRect().width||0,
+    zoom:parseFloat(getComputedStyle(document.querySelector('#paper')).zoom||'1')
+  }));
+  expect(metrics.pageWidth).toBeLessThanOrEqual(metrics.viewport+2);
+  expect(metrics.paperPaneWidth).toBeGreaterThan(360);
+  expect(metrics.reviewWidth).toBeGreaterThan(320);
+  expect(metrics.paperWidth).toBeGreaterThan(360);
+  expect(metrics.zoom).toBeGreaterThanOrEqual(.45);
+  expect(metrics.zoom).toBeLessThanOrEqual(1);
+});
+
 test('runtime no longer loads patch stack',async({page})=>{
   await page.goto('/');const srcs=await page.locator('script[src]').evaluateAll(xs=>xs.map(x=>x.getAttribute('src')));expect(srcs).toHaveLength(1);expect(srcs[0]).toContain('js/v060/app.js');
 });
