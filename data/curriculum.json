@@ -1,7 +1,7 @@
 {
-  "version":2,
+  "version":3,
   "phases":[
-    {"id":"phase-1","title":"骨格を取る","summary":"S/VとO/Cを、語の意味より先に構造として見抜く","packIds":["foundation-sv","structure-patterns"]},
+    {"id":"phase-1","title":"骨格を取る","summary":"S/VとO/Cを、語の意味より先に構造として見抜く","packIds":["foundation-sv","sv-phrase-boundary","structure-patterns"]},
     {"id":"phase-2","title":"動詞とイメージ","summary":"動詞が作る関係と、to・前置詞の核イメージをつなぐ","packIds":["verb-meaning","to-ing-core","core-prepositions","core-image-extended"]},
     {"id":"phase-3","title":"節と時間","summary":"修飾・節を外し、時制を時間の見え方として理解する","packIds":["modifiers-clauses","tense-time"]},
     {"id":"phase-4","title":"構造を使う","summary":"語順・誤文修正・非定形・混合診断で知識を判断へ変える","packIds":["sentence-building","grammar-repair","structure-traps","mixed-diagnostic"]},
@@ -9,6 +9,7 @@
   ],
   "packs":{
     "foundation-sv":{"order":10,"phase":"骨格を取る","minutes":28,"skills":["sv","clauses"],"tags":["主節","関係詞","分詞","受動態","倒置"]},
+    "sv-phrase-boundary":{"order":15,"phase":"骨格を取る","minutes":20,"skills":["phrase-boundary","verb-group","clauses"],"tags":["AI補強","Sの範囲","Vのまとまり","受動態","進行形","完了形"]},
     "structure-patterns":{"order":20,"phase":"骨格を取る","minutes":28,"skills":["patterns","oc"],"tags":["O=C","S=C","SVOO","SVOC"]},
     "verb-meaning":{"order":30,"phase":"動詞とイメージ","minutes":24,"skills":["verb-pattern","svoc"],"tags":["run","grow","look","sound","keep","call"]},
     "to-ing-core":{"order":40,"phase":"動詞とイメージ","minutes":24,"skills":["verb-form","core-image"],"tags":["to","ing","remember","stop","try"]},
@@ -25,6 +26,8 @@
   },
   "skills":{
     "sv":{"label":"S/V","description":"文全体の中心となる主語と有限動詞を取る"},
+    "phrase-boundary":{"label":"Sの範囲","description":"主語の中心語だけでなく、主語として働く語句・節の範囲全体を取る"},
+    "verb-group":{"label":"Vのまとまり","description":"be/have/助動詞と分詞を分断せず、進行・受動・完了を作る動詞群として取る"},
     "patterns":{"label":"5文型","description":"語順だけでなく意味関係からO/Cを判定する"},
     "clauses":{"label":"節","description":"主節・従属節・名詞節・関係詞節の境界を取る"},
     "verb-pattern":{"label":"動詞と文型","description":"同じ動詞でも文中の意味で構造が変わることを捉える"},
