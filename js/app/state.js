@@ -9,7 +9,7 @@ const RECOVERY_KEY='english-worksheet-recovery-v2';
 
 const now=()=>new Date().toISOString();
 export const uid=()=>crypto.randomUUID?.()||`${Date.now()}-${Math.random().toString(16).slice(2)}`;
-export const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+export const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const clone=v=>structuredClone(v);
 
 function blankState(){return {version:6,createdAt:now(),updatedAt:now(),activePackId:null,packProgress:{},sessions:[],analysis:null,analysisHistory:[],migration:{from:null,completedAt:null}}}
