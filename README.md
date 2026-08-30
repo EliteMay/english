@@ -1,242 +1,161 @@
 # English Worksheet Lab
 
-**Version: v0.5.4**  
-**Build: 20260830-6**  
-**Data Schema: 4 / Analysis Schema: 2 / Submission Package: 2**
+**Version: v0.6.0**  
+**Build: 20260830-8**  
+**State Schema: 6 / Paper Schema: 6 / Analysis Schema: 2 / Submission Package: 3**
 
-個人用の英語問題集サイトです。GitHub Pages上で、PDFのワークシートのように複数問題を並べ、ペンタブで問題文へ直接書き込みます。
+個人用の英語問題集サイトです。GitHub Pages上でPDFワークシートのように問題を並べ、ペンタブで英文・選択肢・回答欄へ直接書き込みます。
 
-学習の流れは次の通りです。
+学習の基本フローは変えません。
 
-**問題を選ぶ → 紙面へ直接解く → 左に問題・右に答えを出して自己採点 → 解いた紙をZIPでChatGPTへ渡す → 弱点分析JSONをサイトへ戻す**
+**問題を選ぶ → 紙面へ直接解く → 左に問題用紙を固定して右で答え合わせ → 結果・復習 → 解いた紙ZIPをChatGPTへ渡す → 弱点分析JSONを戻す**
 
-## 目的
+## v0.6.0で作り直した理由
 
-- 入力フォーム中心ではなく、紙へ直接書く感覚で解く
-- 同じ型の簡単問題を大量反復しない
-- 逐語訳より先に英文の骨格を取る
-- S/V → O/C・5文型 → 動詞 → to/ing → 節 → 時制 → 語順 → 誤文修正 → 長文へ積み上げる
-- 正誤だけでなく、丸・下線・括弧・矢印・消去・書き直し・時間も残す
-- ChatGPT分析で見えた弱点を、次の問題・サイト改善へ反映する
+v0.5系は機能追加を優先した結果、`practice.js` の上から別JSで関数を上書きし、さらに後続パッチを重ねる構成になっていました。またペン座標をページ全体に対して保存していたため、上の問題の高さが変わるだけで後ろの手書きがずれる問題が起きました。
 
-## v0.5.4 — 答え合わせで手書き位置をずらさない
+v0.6.0では新機能より先に、**更新しても紙と手書きが壊れない土台**へ作り直しています。
 
-左右2ペインへ切り替えた際、左ペインが狭くなることで問題文・回答欄が折り返され、保存済みのペン座標と紙面がずれる問題を修正しました。
+## 崩してはいけない仕様
 
-### 修正内容
+1. サイトの中心は紙の問題集である
+2. 複数問題を1ページに並べる
+3. ペンタブで問題そのものへ直接書く
+4. 入力フォーム中心の学習UIへ戻さない
+5. 同型の簡単問題で問題数を水増ししない
+6. 基礎から扱うが説明を幼くしすぎない
+7. 骨格読みでは修飾を一旦後回しにする
+8. 「骨格S」と文法上の「S全体」を混同しない
+9. 範囲問題だけS全体の端まで評価する
+10. Vは動詞グループとして扱い、副詞・O・Cを混ぜない
+11. 問題を開始した時点の紙面Revisionを保存し、後の教材更新で既存紙面を変形させない
+12. 新しい手書きは問題単位の座標で保存する
+13. 既存のv0.5系手書きデータを勝手に消さない
+14. 未着手問題を0点扱いしない
+15. 解いた紙面をChatGPTへZIPで渡せる
+16. APIキー・個人データを公開GitHubへ自動送信しない
+17. 破壊的操作にはバックアップ・復元手段を用意する
+18. GitHub Pagesの相対パスを維持する
 
-- 問題を解いている時の紙幅を保存
-- 答え合わせではその紙幅を維持
-- 左ペインへ入らない場合も、文章や回答欄を再配置しない
-- 紙全体を同じ比率で縮小して左ペインへ収める
-- Canvasも紙幅固定後に再描画する
-- 保存済みのペン座標は変更しない
-- 答え合わせ終了後は通常の用紙倍率へ戻す
+## 問題用紙とペン保存
 
-これにより、**英文・回答欄・手書きが同じ比率で動くため、答え合わせへ入っても位置関係が変わりません。**
+### v0.6以降の新しい紙
 
-### 紙面レイアウトの重要ルール
-
-手書きデータは問題用紙に対する相対座標で保存しています。そのため今後は、書き込み済みの既存問題IDについて次を崩しません。
-
-- 回答欄の数
-- 回答欄の順番
-- 問題文の大幅な高さ変更
-- 問題内へ新しい行を追加して既存要素を押し下げる変更
-
-教材上の説明追加が必要な場合は、原則として紙面外のUI・答え合わせ欄・新しい問題IDで行います。
-
-## v0.5.3 — 「骨格S」と「S全体」を分離
-
-実際の提出ZIPを分析したあと、学習目的と文法上の厳密な範囲を混同していた部分を修正しました。
-
-### 3種類の問題モード
-
-#### 1. 骨格読み
-
-長文を読む第一段階です。
-
-修飾を一旦後回しにして、**S側の中心と主節Vを先に取ります。**
-
-例:
+手書きストロークはページ全体ではなく、**各問題の枠内を0〜1の相対座標**としてIndexedDBへ保存します。
 
 ```text
-Reading difficult sentences slowly helps me notice the structure.
+問6
+┌──────────────────────┐
+│ x=0.24 / y=0.61 の線 │
+└──────────────────────┘
 ```
 
-最初は:
+そのため問1〜5の高さが変わっても、問6の手書きは問6と一緒に動きます。
+
+### 既存v0.5系データ
+
+旧データのページ座標はそのまま捨てず、IndexedDBの`legacyInk`へ移行します。実際に解いた可能性が高いS/V系2セットについてはGit履歴から当時の問題定義を保存してあります。
+
+- `data/legacy/foundation-sv-v051.json`
+- `data/legacy/sv-phrase-boundary-v051.json`
+
+新しい書き込みは問題単位方式、旧書き込みは互換レイヤーで表示します。
+
+## Paper Revision
+
+問題を開始した時点で、その問題セット全文を`paperSnapshots`へ保存します。
 
 ```text
-Reading / helps
-Sの核    V
+attempt
+ ├─ paperSnapshotId
+ ├─ paperRevision
+ └─ ink
 ```
 
-まで見えればよいとします。
+後からGitHub上の問題文・回答欄・説明を変更しても、そのattemptは開始時の問題用紙を使い続けます。
 
-`difficult sentences` や `slowly` は後から戻ります。
+「新しい紙」を選んだ時だけ最新教材で新しいattemptを作ります。
 
-ここでいう **骨格S / Sの核は読解用のラベル** であり、文法上の主語全体と同じ意味ではありません。
+## 保存場所
 
-#### 2. 範囲問題
+### localStorage
 
-問題文に **「S全体」「範囲問題」** と書いてある場合だけ、文法上の主語として働く句・節を端まで確認します。
-
-上の文なら:
+軽いメタデータのみです。
 
 ```text
-Reading difficult sentences slowly
+english-worksheet-lab-v6
+english-worksheet-prefs-v2
+english-worksheet-recovery-v2
 ```
 
-全体が主語として働きます。
+### IndexedDB
 
-骨格読みで `slowly` を省いたこと自体は誤答扱いしません。
-
-#### 3. 構造分解
-
-S/V/O/C、文型、節などを厳密に分けます。
-
-例:
+容量が増えやすいデータを保存します。
 
 ```text
-The student has been absent this week.
+english-worksheet-lab-v6
+├─ ink            問題単位の新しい手書き
+├─ legacyInk      v0.5系ページ座標の手書き
+├─ paperSnapshots 問題開始時の紙面
+└─ archives       やり直す前のattempt
 ```
 
-```text
-S = The student
-V = has been
-C = absent
-this week = 修飾
-```
-
-`absent` をVへ含めません。
-
-また:
-
-```text
-has already been checked
-```
-
-では `already` は副詞なので、Vグループは:
-
-```text
-has been checked
-```
-
-です。
-
-### UI改善
-
-問題用紙と答え合わせ欄に:
-
-- 骨格読み
-- 範囲問題
-- 構造分解
-
-のバッジを表示します。
-
-答え合わせ右ペインには **「← 問Nを見る」** を追加し、押すと左の問題用紙の該当問題へ移動します。
-
-### ChatGPT分析ルールも修正
-
-提出ZIPの依頼文へ以下を追加しています。
-
-- 骨格問題で省いた修飾語を弱点扱いしない
-- 範囲問題だけS全体の端を評価する
-- Vから副詞を除く
-- SVCではCをVへ含めない
-- 骨格Sと文法上のS全体を区別する
-
-## 現在の問題集
-
-**15セット / 200問**
-
-1. S/Vを本当に見抜く
-2. 補強｜骨格SとVグループを分ける
-3. O/C・5文型を関係で判定
-4. 同じ動詞でも構造が変わる
-5. to / ing をイメージで理解
-6. 前置詞を核イメージで考える
-7. 前置詞の核イメージを広げる
-8. 修飾を外して節を分ける
-9. 時制を時間の見え方で選ぶ
-10. 語順から英文の骨格を組み立てる
-11. 誤文修正｜なぜ不自然かを見抜く
-12. 構造トラップ｜Vっぽい形を全部Vにしない
-13. 総合診断｜どこで判断が崩れるか
-14. 長文を骨格から読む
-15. 段落読解｜骨格・指示語・論理を追う
+完全バックアップJSONではlocalStorageとIndexedDBの両方を書き出します。
 
 ## 画面構成
 
 ### 01 問題を選ぶ
 
 - 15セット / 200問
-- 分野・難易度・進捗で絞り込み
-- フリーワード検索
+- 分野・難易度・進捗フィルター
+- 検索
 - 続きから
-- ChatGPT分析からの推奨問題
-- △・×から作るミス復習
-- 5段階カリキュラム
+- ChatGPT分析の推奨
+- 新しい紙を開始
 
 ### 02 問題を解く
 
-A4風の問題用紙へ常時ペン入力します。
-
+- PDF風の白い問題用紙
 - 黒 / 赤 / 青 / 緑
 - 蛍光マーカー
 - 細 / 中 / 太
-- 筆圧
 - 消しゴム
 - Undo / Redo
-- ページ消去 + Undo
-- 85 / 100 / 115 / 130%表示
+- ページ消去
+- 85 / 100 / 115 / 130%
 - 集中モード
+- 入力デバイス・筆圧表示
 - ページ学習時間
-- 途中状態保存
 
-#### 答え合わせ
+問題用紙では解くために必要な情報だけを表示し、長い説明・正答・迷いタグは答え合わせ右側へ分離します。
+
+### 答え合わせ
 
 デスクトップでは:
 
-- 左: 実際に解いた問題用紙
-- 右: 正答・○△×・迷いタグ・メモ
+- 左: 解いた問題用紙
+- 右: 正答・解説・○△×・迷いタグ・メモ
 
-を同時表示します。
-
-左右は独立スクロールです。右の「問Nを見る」で左の該当問題へ移動できます。
-
-答え合わせへ切り替えても左の紙面は再レイアウトせず、解答時の紙幅を維持したまま必要に応じて等倍縮小します。
-
-1024px未満では上下配置へ戻します。
+左右を独立スクロールします。答え合わせへ移っても左の問題DOMは同じ問題スナップショットから同じマークアップで再生成し、Firefox E2Eで位置・高さ・幅が変わらないことを確認します。
 
 ### 03 結果・復習
 
-- ○ / △ / ×
-- 未着手は0点扱いしない
-- 分野別最新理解度
+- スコアと進捗率を分離
+- 未着手を0点にしない
+- 分野別の最新理解度
 - 学習時間
 - 履歴
-- ミス復習
+- △・×復習
 
 ### 04 弱点・ChatGPT分析
 
-ChatGPT分析JSONから:
+提出範囲を選べます。
 
-- 弱点
-- 原因
-- 根拠
-- 確信度
-- 分野別評価
-- 読み方の癖
-- 強み
-- 次の学習対象
-- 推奨問題
-- サイト改善案
-- 分析履歴
+- **今回の問題だけ**（標準）
+- 最近3回
+- すべての現在紙
 
-を表示します。
-
-## ChatGPT提出ZIP
+## ChatGPT提出ZIP v3
 
 ```text
 english_submission_YYYY-MM-DD.zip
@@ -244,44 +163,89 @@ english_submission_YYYY-MM-DD.zip
 │  └─ 実際に解いた問題用紙.png
 ├─ manifest.json
 ├─ paper-index.json
-├─ learning-data.json
+├─ paper-snapshots.json
 ├─ ink-history.json
+├─ learning-data.json
 ├─ questions.json
-├─ diagnostics.json
-├─ archived-attempts-summary.json
 ├─ analysis-return.schema.json
 └─ ChatGPTに見てほしいこと.txt
 ```
 
-分析優先順:
+紙PNGを最優先にし、ストローク履歴・自己採点・迷い・その時点の問題用紙Revisionを補助情報として分析します。
 
-1. `papers/`
-2. `ink-history.json`
-3. `paper-index.json`
-4. `learning-data.json`
-5. `questions.json`
+## 教材ルール
 
-## 保存
+教材方針の正本は`data/pedagogy.json`です。
 
-学習データ:
+- `skeleton`: 骨格読み
+- `range`: 範囲問題
+- `structure`: 構造分解
 
-```text
-english-worksheet-lab-v4
-```
+README・画面・ChatGPT依頼文へ同じルールをばらばらに直書きしない方針です。
 
-表示設定:
+## ファイル構成
 
 ```text
-english-worksheet-prefs-v1
+/
+├─ index.html
+├─ css/
+│  └─ app-v060.css
+├─ js/v060/
+│  ├─ app.js
+│  ├─ db.js
+│  ├─ state.js
+│  ├─ data.js
+│  ├─ library.js
+│  ├─ practice.js
+│  ├─ ink.js
+│  ├─ results.js
+│  ├─ analysis.js
+│  └─ export.js
+├─ data/
+│  ├─ pedagogy.json
+│  ├─ curriculum.json
+│  ├─ analysis-return.schema.json
+│  ├─ legacy/
+│  └─ packs/
+├─ tests/
+│  ├─ validate.mjs
+│  └─ e2e.spec.mjs
+├─ playwright.config.mjs
+├─ package.json
+├─ .github/workflows/validate.yml
+├─ README.md
+└─ 作業報告書.md
 ```
 
-復元スナップショット:
+## 自動検証
 
-```text
-english-worksheet-recovery-v1
-```
+GitHub Actionsで次を実行します。
 
-データ管理からバックアップ・復元・整合性診断・安全なリセットができます。
+### Static
+
+- v0.6 JS構文
+- JSON構文
+- 15セット / 200問をmanifestから検証
+- ID重複
+- 問題type必須値
+- curriculum参照
+- pedagogy定義
+- Paper Schema
+- HTML参照切れ
+- 旧v0.5パッチJSを実行時に読み込んでいないこと
+- 問題単位ペン保存コード
+- hardcodeされた旧14セット/188問診断が残っていないこと
+
+### Firefox E2E
+
+実際のFirefoxを起動して:
+
+1. 問題を開く
+2. 問2へ線を描く
+3. 答え合わせへ移動
+4. 問1〜3の`offsetTop / height / width`が変わっていないことを確認
+5. 問題canvasが問題サイズに一致していることを確認
+6. Runtime scriptがv0.6本体1本だけであることを確認
 
 ## GitHub Pages
 
@@ -289,88 +253,14 @@ english-worksheet-recovery-v1
 https://elitemay.github.io/english/
 ```
 
-静的HTML/CSS/JavaScript/JSONのみで動作します。APIキーは不要です。
+APIキー不要の静的HTML/CSS/JavaScript/JSONです。
 
-## ファイル構成
+## 既知・未確認
 
-```text
-/
-├─ .github/workflows/validate.yml
-├─ index.html
-├─ css/
-│  ├─ styles.css
-│  ├─ paper-v041.css
-│  ├─ product-v050.css
-│  ├─ review-split-v052.css
-│  └─ pedagogy-v053.css
-├─ js/
-│  ├─ version.js
-│  ├─ core.js
-│  ├─ practice.js
-│  ├─ results-analysis.js
-│  ├─ ink.js
-│  ├─ export-zip.js
-│  ├─ results-v050.js
-│  ├─ export-v050.js
-│  ├─ product-v050.js
-│  ├─ pedagogy-v053.js
-│  ├─ review-geometry-v054.js
-│  └─ bootstrap.js
-├─ data/
-│  ├─ curriculum.json
-│  ├─ analysis-return.schema.json
-│  └─ packs/
-├─ tests/validate.mjs
-├─ README.md
-└─ 作業報告書.md
-```
+- Windows実機のペンタブで長時間書いた場合の遅延
+- 実機Firefoxで`pointerType=pen`と可変pressureが届くか
+- v0.5系の旧ページ座標が、すべての過去紙面でピクセル単位まで完全一致するか
+- 大量ページを一度にPNG→ZIP化した時の実機性能
+- ブラウザごとのIndexedDB上限差
 
-## 自動検証
-
-GitHub Actionsでpush / PRごとに確認します。
-
-- JavaScript構文
-- JSON構文
-- 15セット / 200問
-- ID重複
-- type別必須データ
-- curriculum参照
-- HTML参照切れ
-- v0.5.4の主要JS/CSS
-- `studyMode` の値
-- `sv09`: V=`has been checked`
-- `pb03`: 骨格S=`Reading` を許容
-- `pb08`: V=`has been`, C=`absent`
-- 同一英文の過剰反復
-
-## 崩してはいけない仕様
-
-1. サイトの中心は紙の問題集
-2. 複数問題を1ページに並べる
-3. ペンタブで直接書く
-4. 入力フォーム中心へ戻さない
-5. 同型問題で水増ししない
-6. 基礎でも説明を幼くしない
-7. 骨格読みでは修飾を後回しにする
-8. 骨格Sと文法上のS全体を混同しない
-9. 範囲問題だけS全体を端まで取る
-10. Vは動詞グループで、副詞・O・Cを混ぜない
-11. 長文は主節・節・修飾・論理を見る
-12. 解いた紙面をChatGPTへ渡せる
-13. 消した線を含む途中経過を残す
-14. ChatGPT分析を次の問題へ反映する
-15. 未着手を誤答扱いしない
-16. 学習データを公開GitHubへ自動送信しない
-17. 破壊的操作には復旧手段を用意する
-18. GitHub Pagesの相対パスを維持する
-19. 答え合わせでは問題用紙と正答を同時に見られる
-20. 書き込み済み紙面の問題レイアウトを同じ問題IDのまま壊さない
-
-## 未確認
-
-- Windows実機ペンタブで長時間使用した際の筆圧・遅延
-- Firefoxで大量ページをPNG→ZIP化した場合の性能
-- ブラウザごとの保存容量差
-- v0.5.4の紙幅固定・等倍縮小が実際のユーザー画面で完全に位置一致するか
-
-未確認項目を確認済みとして扱わないでください。
+未確認の内容を確認済みとして扱わないでください。
