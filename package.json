@@ -1,7 +1,7 @@
 {
   "name": "english-worksheet-lab",
   "private": true,
-  "version": "0.6.0",
+  "version": "0.6.1",
   "scripts": {
     "test:static": "node tests/validate.mjs",
     "test:e2e": "playwright test --project=firefox"
