@@ -5,15 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0f1720">
   <title>English Worksheet Lab</title>
-  <link rel="stylesheet" href="./css/app-v060.css?b=20260830-9">
-  <link rel="stylesheet" href="./css/review.css?b=20260830-9">
+  <link rel="stylesheet" href="./css/app.css">
+  <link rel="stylesheet" href="./css/review.css">
+  <link rel="stylesheet" href="./css/accessibility.css">
 </head>
 <body>
 <div class="app-shell">
   <aside class="sidebar" id="sidebar">
     <div class="brand"><div class="brand-mark">E</div><div><strong>English Worksheet Lab</strong><span>紙に解いて、弱点を見つける</span></div></div>
-    <nav class="nav">
-      <button class="nav-btn active" data-view="library"><span>01</span>問題を選ぶ</button>
+    <nav class="nav" aria-label="メインナビゲーション">
+      <button class="nav-btn active" data-view="library" aria-current="page"><span>01</span>問題を選ぶ</button>
       <button class="nav-btn" data-view="practice"><span>02</span>問題を解く</button>
       <button class="nav-btn" data-view="results"><span>03</span>結果・復習</button>
       <button class="nav-btn" data-view="weakness"><span>04</span>弱点・ChatGPT分析</button>
@@ -23,19 +24,19 @@
       <button id="settingsBtn">⚙ <span>表示・ペン設定</span></button>
       <button id="dataBtn">↕ <span>データ管理</span></button>
     </div>
-    <div class="sidebar-bottom"><div id="saveState">この端末に自動保存</div><div id="appVersion">v0.6.0</div></div>
+    <div class="sidebar-bottom"><div id="saveState" role="status" aria-live="polite">この端末に自動保存</div><div id="appVersion">読み込み中</div></div>
   </aside>
   <main class="main">
     <header class="topbar">
-      <button id="menuBtn" class="menu-btn">☰</button>
+      <button id="menuBtn" class="menu-btn" aria-label="メニューを開閉" aria-controls="sidebar" aria-expanded="false">☰</button>
       <div><span class="eyebrow" id="viewEyebrow">WORKSHEETS</span><h1 id="viewTitle">問題を選ぶ</h1></div>
-      <div class="top-actions"><span class="progress-pill">書き込み済み <strong id="answeredTotal">0</strong>問</span><button id="focusPaperTopBtn" class="secondary compact">集中</button><button id="quickExportBtn" class="primary compact">ChatGPT提出ZIP</button></div>
+      <div class="top-actions"><span class="progress-pill">書き込み済み <strong id="answeredTotal">0</strong>問</span><button id="focusPaperTopBtn" class="secondary compact" aria-pressed="false">集中</button><button id="quickExportBtn" class="primary compact">ChatGPT提出ZIP</button></div>
     </header>
 
     <section class="view active" id="view-library">
       <div class="library-hero"><div><span class="eyebrow">PAPER-FIRST WORKBOOK</span><h2>問題を選んで、<em>紙に解く。</em></h2><p>問題用紙は開始時にRevision固定。教材を更新しても、既に書いた紙は変形しません。</p></div><div class="hero-stats"><div><strong id="packCount">0</strong><span>セット</span></div><div><strong id="questionCount">0</strong><span>問題</span></div><div><strong id="finishedCount">0</strong><span>完了</span></div></div></div>
       <div id="libraryQuick" class="library-quick"></div>
-      <div class="library-toolbar"><label class="search"><span>⌕</span><input id="packSearch" type="search" placeholder="問題名・分野を検索（/）"></label><div id="sourceFilters" class="chips"></div><select id="levelFilter"><option value="all">難易度すべて</option></select><select id="statusFilter"><option value="all">進捗すべて</option><option value="unstarted">未開始</option><option value="active">途中</option><option value="completed">完了</option></select></div>
+      <div class="library-toolbar"><label class="search"><span>⌕</span><input id="packSearch" type="search" placeholder="問題名・分野を検索（/）" aria-label="問題セットを検索"></label><div id="sourceFilters" class="chips"></div><select id="levelFilter" aria-label="難易度で絞り込む"><option value="all">難易度すべて</option></select><select id="statusFilter" aria-label="進捗で絞り込む"><option value="all">進捗すべて</option><option value="unstarted">未開始</option><option value="active">途中</option><option value="completed">完了</option></select></div>
       <div id="curriculumGuide" class="curriculum-guide"></div><div id="packGrid" class="pack-grid"></div>
     </section>
 
@@ -43,14 +44,14 @@
       <div id="practiceEmpty" class="empty-card">「問題を選ぶ」から問題用紙を開いてください。</div>
       <div id="practiceArea" class="practice-area hidden">
         <div class="practice-head"><div><span class="eyebrow" id="practiceSource"></span><h2 id="practiceTitle"></h2><p id="practiceDesc"></p></div><div class="practice-progress"><strong id="practiceProgress">0/0</strong><span>着手</span></div></div>
-        <div class="paper-toolbar">
-          <div class="pen-group"><button class="color-btn active" data-color="#1f2937" aria-label="黒"></button><button class="color-btn red" data-color="#dc2626" aria-label="赤"></button><button class="color-btn blue" data-color="#2563eb" aria-label="青"></button><button class="color-btn green" data-color="#059669" aria-label="緑"></button><button id="markerBtn" class="tool-btn">MARK</button><button id="eraserBtn" class="tool-btn">消しゴム</button><button id="undoInkBtn" class="tool-btn">↶</button><button id="redoInkBtn" class="tool-btn">↷</button></div>
-          <div class="pen-size-group"><button class="tool-btn pen-size" data-pen-size="thin">細</button><button class="tool-btn pen-size active" data-pen-size="normal">中</button><button class="tool-btn pen-size" data-pen-size="thick">太</button><span id="inputDeviceBadge">入力: 未検出</span></div>
-          <div class="page-group"><button id="prevPageBtn" class="tool-btn">←</button><span><strong id="pageNow">1</strong>/<span id="pageTotal">1</span></span><button id="nextPageBtn" class="tool-btn">→</button><select id="paperZoom"><option value="0.85">85%</option><option value="1">100%</option><option value="1.15">115%</option><option value="1.3">130%</option></select><button id="focusPaperBtn" class="tool-btn">集中</button><button id="clearInkBtn" class="tool-btn danger">ページ消去</button></div>
+        <div class="paper-toolbar" aria-label="問題用紙ツールバー">
+          <div class="pen-group"><button class="color-btn active" data-color="#1f2937" aria-label="黒ペン" aria-pressed="true"></button><button class="color-btn red" data-color="#dc2626" aria-label="赤ペン" aria-pressed="false"></button><button class="color-btn blue" data-color="#2563eb" aria-label="青ペン" aria-pressed="false"></button><button class="color-btn green" data-color="#059669" aria-label="緑ペン" aria-pressed="false"></button><button id="markerBtn" class="tool-btn" aria-pressed="false">MARK</button><button id="eraserBtn" class="tool-btn" aria-pressed="false">消しゴム</button><button id="undoInkBtn" class="tool-btn" aria-label="手書きを1つ戻す">↶</button><button id="redoInkBtn" class="tool-btn" aria-label="手書きを1つやり直す">↷</button></div>
+          <div class="pen-size-group"><button class="tool-btn pen-size" data-pen-size="thin" aria-pressed="false">細</button><button class="tool-btn pen-size active" data-pen-size="normal" aria-pressed="true">中</button><button class="tool-btn pen-size" data-pen-size="thick" aria-pressed="false">太</button><span id="inputDeviceBadge">入力: 未検出</span></div>
+          <div class="page-group"><button id="prevPageBtn" class="tool-btn" aria-label="前のページ">←</button><span><strong id="pageNow">1</strong>/<span id="pageTotal">1</span></span><button id="nextPageBtn" class="tool-btn" aria-label="次のページ">→</button><select id="paperZoom" aria-label="問題用紙の表示倍率"><option value="0.85">85%</option><option value="1">100%</option><option value="1.15">115%</option><option value="1.3">130%</option></select><button id="focusPaperBtn" class="tool-btn" aria-pressed="false">集中</button><button id="clearInkBtn" class="tool-btn danger">ページ消去</button></div>
         </div>
         <div class="review-layout">
           <div class="paper-pane"><div class="paper-stage" id="paperStage"><article class="paper" id="paper"></article></div></div>
-          <aside id="reviewPanel" class="review-panel hidden"></aside>
+          <aside id="reviewPanel" class="review-panel hidden" aria-label="答え合わせ"></aside>
         </div>
         <div class="practice-footer"><span id="pageTimeLabel"></span><button id="saveSnapshotBtn" class="secondary">途中状態を記録</button><button id="finishBtn" class="primary">答え合わせへ</button></div>
       </div>
@@ -62,19 +63,19 @@
     </section>
 
     <section class="view" id="view-weakness">
-      <div class="section-head"><div><span class="eyebrow">CHATGPT ANALYSIS</span><h2>弱点・ChatGPT分析</h2><p>基本は「今回の問題だけ」をZIPにします。必要な時だけ範囲を広げます。</p></div><div class="analysis-actions"><select id="exportScope"><option value="current">今回の問題だけ</option><option value="recent3">最近3回</option><option value="all">すべての現在紙</option></select><button id="downloadSubmissionZipBtn" class="primary">ChatGPT提出ZIP</button><button id="copyAnalysisPromptBtn" class="secondary">依頼文コピー</button><label class="secondary file-label">分析JSON<input id="analysisImport" type="file" accept=".json,application/json" hidden></label></div></div><div id="exportStatus" class="export-status"></div>
+      <div class="section-head"><div><span class="eyebrow">CHATGPT ANALYSIS</span><h2>弱点・ChatGPT分析</h2><p>基本は「今回の問題だけ」をZIPにします。必要な時だけ範囲を広げます。</p></div><div class="analysis-actions"><select id="exportScope" aria-label="ChatGPT提出範囲"><option value="current">今回の問題だけ</option><option value="recent3">最近3回</option><option value="all">すべての現在紙</option></select><button id="downloadSubmissionZipBtn" class="primary">ChatGPT提出ZIP</button><button id="copyAnalysisPromptBtn" class="secondary">依頼文コピー</button><label class="secondary file-label">分析JSON<input id="analysisImport" type="file" accept=".json,application/json" hidden></label></div></div><div id="exportStatus" class="export-status" role="status" aria-live="polite"></div>
       <div id="analysisEmpty" class="analysis-empty"><p>解いた紙PNG・問題ごとのペン座標・古い紙面Revision・自己採点をまとめてChatGPTへ渡します。</p></div>
       <div id="analysisDashboard" class="hidden"><div class="analysis-summary-grid"><article><span>SUMMARY</span><h3>全体所見</h3><p id="analysisSummary"></p></article><article><span>NEXT</span><h3>次に優先</h3><div id="nextTargets"></div></article></div><div id="analysisSkillProfile"></div><div class="subhead"><h3>弱点</h3><span id="analysisDate"></span></div><div id="weaknessGrid" class="weakness-grid"></div><h3>読み方の癖</h3><div id="readingHabits" class="habit-grid"></div><h3>できているところ</h3><div id="strengthGrid" class="habit-grid"></div><div class="subhead"><h3>分析履歴</h3><span id="analysisHistoryCount"></span></div><div id="analysisHistory" class="analysis-history"></div></div>
       <details class="schema-box"><summary>ChatGPT返却JSON形式</summary><pre id="analysisSchema"></pre></details>
     </section>
   </main>
 </div>
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
-<dialog id="helpDialog"><div class="dialog-card"><button data-close-dialog>×</button><h2>使い方</h2><p><b>問題を選ぶ → 紙に直接解く → 答え合わせ → ZIPをChatGPTへ</b></p><p>骨格読みでは修飾を後回し。「S全体」「範囲」と書かれた問題だけ端まで取ります。</p><p>v0.6以降、手書きは問題ごとの座標で保存します。問1の高さが変わっても問6の線は動きません。</p></div></dialog>
-<dialog id="settingsDialog"><div class="dialog-card"><button data-close-dialog>×</button><h2>表示・ペン設定</h2><label>表示密度 <select id="density"><option value="comfortable">標準</option><option value="compact">コンパクト</option></select></label><label><input id="reduceMotion" type="checkbox"> 動きを減らす</label><p>ペンで一度書くとツールバーに pointerType / 筆圧を表示します。penにならずmouseならブラウザ/ドライバ側で筆圧が届いていません。</p></div></dialog>
-<dialog id="dataDialog"><div class="dialog-card wide"><button data-close-dialog>×</button><h2>データ管理</h2><div id="dataStats" class="data-stats"></div><div class="dialog-actions"><button id="backupBtn" class="primary">完全バックアップJSON</button><label class="secondary file-label">バックアップ読込<input id="restoreBackupInput" type="file" accept=".json" hidden></label><button id="recoveryBtn" class="secondary">復元点を作る</button><button id="restoreRecoveryBtn" class="secondary">復元点へ戻す</button><button id="diagnoseBtn" class="secondary">整合性診断</button><button id="resetAllBtn" class="danger-button">全データ削除</button></div><div id="diagnosticBody" class="diagnostic-list"></div></div></dialog>
+<dialog id="helpDialog"><div class="dialog-card"><button data-close-dialog aria-label="使い方を閉じる">×</button><h2>使い方</h2><p><b>問題を選ぶ → 紙に直接解く → 答え合わせ → ZIPをChatGPTへ</b></p><p>骨格読みでは修飾を後回し。「S全体」「範囲」と書かれた問題だけ端まで取ります。</p><p>v0.6以降、手書きは問題ごとの座標で保存します。問1の高さが変わっても問6の線は動きません。</p></div></dialog>
+<dialog id="settingsDialog"><div class="dialog-card"><button data-close-dialog aria-label="設定を閉じる">×</button><h2>表示・ペン設定</h2><label>表示密度 <select id="density"><option value="comfortable">標準</option><option value="compact">コンパクト</option></select></label><label><input id="reduceMotion" type="checkbox"> 動きを減らす</label><p>ペンで一度書くとツールバーに pointerType / 筆圧を表示します。penにならずmouseならブラウザ/ドライバ側で筆圧が届いていません。</p></div></dialog>
+<dialog id="dataDialog"><div class="dialog-card wide"><button data-close-dialog aria-label="データ管理を閉じる">×</button><h2>データ管理</h2><div id="dataStats"></div><div class="dialog-actions"><button id="backupBtn" class="primary">完全バックアップJSON</button><label class="secondary file-label">バックアップ読込<input id="restoreBackupInput" type="file" accept=".json,application/json" hidden></label><button id="recoveryBtn" class="secondary">復元点を作る</button><button id="restoreRecoveryBtn" class="secondary">復元点へ戻す</button><button id="diagnoseBtn" class="secondary">整合性診断</button><button id="resetAllBtn" class="danger-button">全データ削除</button></div><div id="diagnosticBody" class="diagnostic-list"></div></div></dialog>
 
-<script type="module" src="./js/v060/app.js?b=20260830-9"></script>
+<script type="module" src="./js/app/app.js"></script>
 </body>
 </html>
