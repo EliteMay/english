@@ -44,6 +44,34 @@ test('answer check stays two-pane without page overflow or floating footer',asyn
   expect(metrics.zoom).toBeLessThanOrEqual(1);
 });
 
-test('runtime no longer loads patch stack',async({page})=>{
-  await page.goto('/');const srcs=await page.locator('script[src]').evaluateAll(xs=>xs.map(x=>x.getAttribute('src')));expect(srcs).toHaveLength(1);expect(srcs[0]).toContain('js/v060/app.js');
+test('low-height review keeps finish action visible without covering the first answer',async({page})=>{
+  await page.setViewportSize({width:1280,height:640});
+  await page.goto('/');
+  await page.locator('[data-start-pack]').first().click();
+  await page.locator('#finishBtn').click();
+  const action=page.locator('.review-finish-proxy'),first=page.locator('.review-item').first();
+  await expect(action).toBeVisible();await expect(first).toBeVisible();
+  const [a,f]=await Promise.all([action.boundingBox(),first.boundingBox()]);
+  expect(a.y+a.height).toBeLessThanOrEqual(f.y+2);
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+});
+
+test('small viewport keeps primary navigation and library usable without page overflow',async({page})=>{
+  await page.setViewportSize({width:390,height:780});
+  await page.goto('/');
+  await expect(page.locator('#menuBtn')).toBeVisible();
+  await expect(page.locator('#packGrid .pack-card').first()).toBeVisible();
+  await expect(page.locator('[data-start-pack]').first()).toBeVisible();
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+});
+
+test('runtime uses stable non-versioned paths',async({page})=>{
+  await page.goto('/');
+  const srcs=await page.locator('script[src]').evaluateAll(xs=>xs.map(x=>x.getAttribute('src')));
+  expect(srcs).toHaveLength(1);expect(srcs[0]).toBe('./js/app/app.js');
+  const styles=await page.locator('link[rel="stylesheet"]').evaluateAll(xs=>xs.map(x=>x.getAttribute('href')));
+  expect(styles).toContain('./css/app.css');
+  expect(styles.some(x=>/v\d{3}|\?b=/.test(x))).toBe(false);
 });
