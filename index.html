@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0f1720">
   <title>English Worksheet Lab</title>
-  <link rel="stylesheet" href="./css/app-v060.css?b=20260830-8">
+  <link rel="stylesheet" href="./css/app-v060.css?b=20260830-9">
+  <link rel="stylesheet" href="./css/review.css?b=20260830-9">
 </head>
 <body>
 <div class="app-shell">
@@ -74,6 +75,6 @@
 <dialog id="settingsDialog"><div class="dialog-card"><button data-close-dialog>×</button><h2>表示・ペン設定</h2><label>表示密度 <select id="density"><option value="comfortable">標準</option><option value="compact">コンパクト</option></select></label><label><input id="reduceMotion" type="checkbox"> 動きを減らす</label><p>ペンで一度書くとツールバーに pointerType / 筆圧を表示します。penにならずmouseならブラウザ/ドライバ側で筆圧が届いていません。</p></div></dialog>
 <dialog id="dataDialog"><div class="dialog-card wide"><button data-close-dialog>×</button><h2>データ管理</h2><div id="dataStats" class="data-stats"></div><div class="dialog-actions"><button id="backupBtn" class="primary">完全バックアップJSON</button><label class="secondary file-label">バックアップ読込<input id="restoreBackupInput" type="file" accept=".json" hidden></label><button id="recoveryBtn" class="secondary">復元点を作る</button><button id="restoreRecoveryBtn" class="secondary">復元点へ戻す</button><button id="diagnoseBtn" class="secondary">整合性診断</button><button id="resetAllBtn" class="danger-button">全データ削除</button></div><div id="diagnosticBody" class="diagnostic-list"></div></div></dialog>
 
-<script type="module" src="./js/v060/app.js?b=20260830-8"></script>
+<script type="module" src="./js/v060/app.js?b=20260830-9"></script>
 </body>
 </html>
