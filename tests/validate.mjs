@@ -44,14 +44,19 @@ assert(!html.includes('?b='),'manual cache-bust version remains in HTML');
 assert(!refs.some(r=>/(^|\/)v\d{3}(\/|$)|app-v\d/i.test(r)),'versioned runtime path is loaded');
 assert(!fs.existsSync(path.join(root,'js/v060')),'old versioned runtime directory remains');
 assert(!fs.existsSync(path.join(root,'css/app-v060.css')),'old versioned CSS remains');
+assert(html.includes('id="dataStats" class="data-stats"'),'data dialog styling hook missing');
 
 for(const f of['meta.js','validation.js','db.js','state.js','data.js','library.js','practice.js','review-layout.js','ink.js','results.js','analysis.js','export.js','app.js'])assert(fs.existsSync(path.join(root,'js/app',f)),`missing js/app/${f}`);
-const app=read('js/app/app.js'),ink=read('js/app/ink.js'),state=read('js/app/state.js');
+const app=read('js/app/app.js'),ink=read('js/app/ink.js'),state=read('js/app/state.js'),practice=read('js/app/practice.js'),reviewLayout=read('js/app/review-layout.js');
 assert(ink.includes('getQuestionInk')&&ink.includes('questionId'),'question-local ink missing');
 assert(state.includes('paperSnapshotId')&&state.includes('paperRevision'),'paper snapshot missing');
 assert(app.includes('expectedCounts')&&!app.includes('===14')&&!app.includes('===188'),'diagnostic hardcode remains');
 assert(app.includes('validateBackup'),'backup import validation missing');
 assert(read('js/app/analysis.js').includes('validateAnalysis'),'analysis import validation missing');
+assert(!reviewLayout.includes('MutationObserver'),'review layout must not patch renderer with MutationObserver');
+assert(practice.includes('class="review-finish-proxy"'),'review finish action must be rendered by practice renderer');
+assert(practice.includes('appVersion:APP.version'),'session version must use metadata source');
+assert(!/appVersion:\s*['"]v\d/.test(practice),'hardcoded session appVersion remains');
 
 const publicText=['index.html',...walk('js/app').filter(f=>f.endsWith('.js')),...walk('data').filter(f=>f.endsWith('.json'))].map(read).join('\n');
 assert(!/localhost|127\.0\.0\.1|[A-Za-z]:\\\\/.test(publicText),'localhost or PC absolute path found in public runtime/data');
