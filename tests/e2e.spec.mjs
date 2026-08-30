@@ -67,6 +67,16 @@ test('small viewport keeps primary navigation and library usable without page ov
   expect(overflow).toBeLessThanOrEqual(2);
 });
 
+test('data dialog keeps storage summary and recovery controls visible',async({page})=>{
+  await page.goto('/');
+  await page.locator('#dataBtn').click();
+  await expect(page.locator('#dataDialog')).toBeVisible();
+  await expect(page.locator('#dataStats.data-stats')).toBeVisible();
+  await expect(page.locator('#backupBtn')).toBeVisible();
+  await expect(page.locator('#restoreRecoveryBtn')).toBeVisible();
+  await expect(page.locator('#diagnoseBtn')).toBeVisible();
+});
+
 test('runtime uses stable non-versioned paths',async({page})=>{
   await page.goto('/');
   const srcs=await page.locator('script[src]').evaluateAll(xs=>xs.map(x=>x.getAttribute('src')));
