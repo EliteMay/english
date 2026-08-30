@@ -1,7 +1,7 @@
 name: Validate English Worksheet Lab
 on:
   push:
-    branches: [main, refactor-v060]
+    branches: [main, refactor-v060, fix-review-layout-v061]
   pull_request:
     branches: [main]
 permissions:
