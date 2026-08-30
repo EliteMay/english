@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <title>English Worksheet Lab</title>
-  <script src="./js/version.js?b=20260830-4"></script>
-  <link rel="stylesheet" href="./css/styles.css?b=20260830-4">
-  <link rel="stylesheet" href="./css/paper-v041.css?b=20260830-4">
-  <link rel="stylesheet" href="./css/product-v050.css?b=20260830-4">
-  <link rel="stylesheet" href="./css/review-split-v052.css?b=20260830-4">
+  <script src="./js/version.js?b=20260830-5"></script>
+  <link rel="stylesheet" href="./css/styles.css?b=20260830-5">
+  <link rel="stylesheet" href="./css/paper-v041.css?b=20260830-5">
+  <link rel="stylesheet" href="./css/product-v050.css?b=20260830-5">
+  <link rel="stylesheet" href="./css/review-split-v052.css?b=20260830-5">
+  <link rel="stylesheet" href="./css/pedagogy-v053.css?b=20260830-5">
 </head>
 <body>
   <div class="app-shell">
@@ -26,7 +27,7 @@
         <button class="sidebar-tool" id="settingsBtn" type="button">⚙ <span>表示・ペン設定</span></button>
         <button class="sidebar-tool" id="dataBtn" type="button">↕ <span>データ管理</span></button>
       </div>
-      <div class="sidebar-bottom"><div class="autosave"><i></i><span id="saveState">この端末に自動保存</span></div><div class="version" id="appVersion">v0.5.2</div></div>
+      <div class="sidebar-bottom"><div class="autosave"><i></i><span id="saveState">この端末に自動保存</span></div><div class="version" id="appVersion">v0.5.3</div></div>
     </aside>
     <main class="main">
       <header class="topbar">
@@ -51,7 +52,7 @@
             <div class="pen-size-group" aria-label="ペン太さ"><button class="tool-btn pen-size" data-pen-size="thin" type="button">細</button><button class="tool-btn pen-size active" data-pen-size="normal" type="button">中</button><button class="tool-btn pen-size" data-pen-size="thick" type="button">太</button></div>
             <div class="page-group"><button class="tool-btn" id="prevPageBtn" type="button">←</button><span><strong id="pageNow">1</strong> / <span id="pageTotal">1</span></span><button class="tool-btn" id="nextPageBtn" type="button">→</button><select id="paperZoom" class="tool-select" aria-label="用紙倍率"><option value="0.85">85%</option><option value="1" selected>100%</option><option value="1.15">115%</option><option value="1.3">130%</option></select><button class="tool-btn" id="focusPaperBtn" type="button">集中</button><button class="tool-btn danger-lite" id="clearInkBtn" type="button">ページ消去</button></div>
           </div>
-          <div class="paper-stage" id="paperStage"><article class="paper pen-mode" id="paper"><div class="paper-header"><div><span>English Worksheet Lab</span><strong id="paperTitle"></strong></div><div class="paper-meta"><span>名前：かいと</span><span id="paperPageLabel">Page 1</span></div></div><div class="paper-rule">骨格S/V：Sは主語として働く語句・節の範囲全体、Vは進行・受動・完了・助動詞を含む動詞のまとまりとして書く。修飾の節・句は必要に応じて括弧で外す。</div><div id="questionList" class="question-list"></div><canvas id="inkCanvas" aria-label="ペンタブ書き込み"></canvas></article></div>
+          <div class="paper-stage" id="paperStage"><article class="paper pen-mode" id="paper"><div class="paper-header"><div><span>English Worksheet Lab</span><strong id="paperTitle"></strong></div><div class="paper-meta"><span>名前：かいと</span><span id="paperPageLabel">Page 1</span></div></div><div class="paper-rule"><strong>基本は骨格読み</strong>：修飾を後回しにし、S側の中心と主節Vを先に取る。「S全体」「範囲」と指定された問題だけ端まで取る。Vは動詞グループで、O/C・副詞は含めない。</div><div id="questionList" class="question-list"></div><canvas id="inkCanvas" aria-label="ペンタブ書き込み"></canvas></article></div>
           <div id="reviewPanel" class="review-panel hidden"></div><div class="practice-footer"><span id="pageTimeLabel" class="page-time-label"></span><button class="secondary" id="saveSnapshotBtn" type="button">途中経過を保存</button><button class="primary" id="finishBtn" type="button">答え合わせへ</button></div>
         </div>
       </section>
@@ -65,17 +66,18 @@
     </main>
   </div>
   <div id="toast" class="toast" role="status"></div>
-  <script src="./js/core.js?b=20260830-4"></script>
-  <script src="./js/practice.js?b=20260830-4"></script>
-  <script src="./js/results-analysis.js?b=20260830-4"></script>
-  <script src="./js/ink.js?b=20260830-4"></script>
-  <script src="./js/export-zip.js?b=20260830-4"></script>
-  <script src="./js/export-zip-v041.js?b=20260830-4"></script>
-  <script src="./js/practice-v050.js?b=20260830-4"></script>
-  <script src="./js/ink-v050.js?b=20260830-4"></script>
-  <script src="./js/results-v050.js?b=20260830-4"></script>
-  <script src="./js/export-v050.js?b=20260830-4"></script>
-  <script src="./js/product-v050.js?b=20260830-4"></script>
-  <script src="./js/bootstrap.js?b=20260830-4"></script>
+  <script src="./js/core.js?b=20260830-5"></script>
+  <script src="./js/practice.js?b=20260830-5"></script>
+  <script src="./js/results-analysis.js?b=20260830-5"></script>
+  <script src="./js/ink.js?b=20260830-5"></script>
+  <script src="./js/export-zip.js?b=20260830-5"></script>
+  <script src="./js/export-zip-v041.js?b=20260830-5"></script>
+  <script src="./js/practice-v050.js?b=20260830-5"></script>
+  <script src="./js/ink-v050.js?b=20260830-5"></script>
+  <script src="./js/results-v050.js?b=20260830-5"></script>
+  <script src="./js/export-v050.js?b=20260830-5"></script>
+  <script src="./js/product-v050.js?b=20260830-5"></script>
+  <script src="./js/pedagogy-v053.js?b=20260830-5"></script>
+  <script src="./js/bootstrap.js?b=20260830-5"></script>
 </body>
 </html>
