@@ -7,13 +7,15 @@
 - `js/v060/` を `js/app/` へ変更し、Versioned Runtimeの恒久化を解消
 - `css/app-v060.css` を `css/app.css` へ変更
 - App Version / Build / Schemaを `js/app/meta.js` へ一元化
+- 学習Sessionの `appVersion` 固定値を廃止し、Metadata正本を参照
 - HTMLの手動cache-bust queryを削除
 - Project Profileを `STATIC + DATA + MEDIA + AI-HANDOFF + TOOL` として記録
+- 答え合わせ操作をMutationObserverで後付けせず、正式Rendererで生成する構造へ統合
 - Backup / ChatGPT分析JSONのImport Validationを追加
 - Backup Import途中失敗時のIndexedDB Rollbackを追加
 - 複数タブ更新を `storage` eventで検知し警告
 - `aria-live` / `aria-pressed` / `aria-current` / focus-visible / reduced-motionを改善
-- Small viewport / 低い縦解像度のFirefox E2Eを追加
+- Small viewport / 低い縦解像度 / データ管理DialogのFirefox E2Eを追加
 - READMEを現在仕様中心へ整理し、Version履歴をCHANGELOGへ分離
 
 保存Schema / Storage Key / Paper Schemaは変更していない。
