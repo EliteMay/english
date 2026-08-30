@@ -1,6 +1,7 @@
 import {setLegacyPageInk,putPaperSnapshot,putArchive,clearAttemptInk} from './db.js';
+import {APP} from './meta.js';
 
-export const APP={version:'v0.6.1',build:'20260830-9',stateSchema:6,paperSchema:6,analysisSchema:2,submissionPackage:3};
+export {APP};
 const STATE_KEY='english-worksheet-lab-v6';
 const OLD_KEYS=['english-worksheet-lab-v4','english-worksheet-lab-v3','english-worksheet-lab-v2'];
 const PREF_KEY='english-worksheet-prefs-v2';
@@ -8,7 +9,7 @@ const RECOVERY_KEY='english-worksheet-recovery-v2';
 
 const now=()=>new Date().toISOString();
 export const uid=()=>crypto.randomUUID?.()||`${Date.now()}-${Math.random().toString(16).slice(2)}`;
-export const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 export const clone=v=>structuredClone(v);
 
 function blankState(){return {version:6,createdAt:now(),updatedAt:now(),activePackId:null,packProgress:{},sessions:[],analysis:null,analysisHistory:[],migration:{from:null,completedAt:null}}}
@@ -18,6 +19,7 @@ export let state=loadInitialState();
 export let prefs=loadPrefs();
 let saveTimer=0;
 let onSave=null;
+let onExternalChange=null;
 
 function loadPrefs(){
   const p=safeParse(localStorage.getItem(PREF_KEY))||{};
@@ -58,14 +60,23 @@ function migrateStateObject(old,key){
 }
 
 export function setSaveListener(fn){onSave=fn}
+export function setExternalChangeListener(fn){onExternalChange=fn}
 export function saveState(immediate=false){
   state.updatedAt=now();
   clearTimeout(saveTimer);
   const run=()=>{try{localStorage.setItem(STATE_KEY,JSON.stringify(state));onSave?.(true)}catch(err){console.error(err);onSave?.(false,err)}};
   if(immediate)run();else saveTimer=setTimeout(run,120);
 }
-export function savePrefs(){try{localStorage.setItem(PREF_KEY,JSON.stringify(prefs))}catch{} }
+export function savePrefs(){try{localStorage.setItem(PREF_KEY,JSON.stringify(prefs));return true}catch(err){console.error(err);onSave?.(false,err);return false}}
 export function updatePrefs(patch){prefs={...prefs,...patch};savePrefs()}
+
+globalThis.addEventListener?.('storage',event=>{
+  if(event.key!==STATE_KEY||!event.newValue)return;
+  const incoming=safeParse(event.newValue);
+  if(!incoming?.updatedAt)return;
+  const incomingTime=Date.parse(incoming.updatedAt),currentTime=Date.parse(state.updatedAt||0);
+  if(Number.isFinite(incomingTime)&&incomingTime>currentTime)onExternalChange?.(incoming);
+});
 
 export function progress(packId=state.activePackId){return packId?state.packProgress[packId]||null:null}
 export function ensureProgress(packId){
