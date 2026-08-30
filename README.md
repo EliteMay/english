@@ -1,37 +1,18 @@
 # English Worksheet Lab
 
-**Version: v0.6.1**  
-**Build: 20260830-9**  
-**State Schema: 6 / Paper Schema: 6 / Analysis Schema: 2 / Submission Package: 3**
-
 個人用の英語問題集サイトです。GitHub Pages上でPDFワークシートのように問題を並べ、ペンタブで英文・選択肢・回答欄へ直接書き込みます。
 
-学習の基本フローは変えません。
+**学習フロー:** 問題を選ぶ → 紙面へ直接解く → 左に問題用紙を残して右で答え合わせ → 結果・復習 → 解いた紙ZIPをChatGPTへ渡す → 弱点分析JSONを戻す
 
-**問題を選ぶ → 紙面へ直接解く → 左に問題用紙を固定して右で答え合わせ → 結果・復習 → 解いた紙ZIPをChatGPTへ渡す → 弱点分析JSONを戻す**
+## Project Profile
 
-## v0.6.1 — 答え合わせ画面のレイアウト修正
+Adopted Guide: `web-project-guide` **1.1.0**
 
-v0.6.0公開後、答え合わせ画面で950pxの問題用紙が左ペインの幅を押し広げ、ページ全体に横スクロールが発生していました。その結果、右の回答欄へ横移動すると左の問題用紙がほぼ見えなくなり、画面下の「途中状態を記録 / 自己採点を保存して結果へ」も回答カードへ重なって見える状態になっていました。
+Profiles: **STATIC + DATA + MEDIA + AI-HANDOFF + TOOL**
 
-v0.6.1では以下へ変更しています。
+現在のApp Version / Build / Schemaの正本は [`js/app/meta.js`](js/app/meta.js) です。READMEへVersion値を重複記載しません。
 
-- 左の問題用紙は内部レイアウトを変えず、ペイン幅に合わせて紙全体を縮小表示
-- ページ全体の横スクロールを禁止
-- 左の問題用紙と右の回答だけを独立スクロール
-- 答え合わせ中は下部フッターを非表示
-- 「採点を保存して結果へ」を右回答ペイン上部の固定ヘッダーへ配置
-- 毎問繰り返していた共通の学習モード説明を答え合わせカードでは省略
-- 右側カードの余白を縮め、同時に見える問題数を増加
-- Firefox E2Eへ「ページ横overflowなし / 左紙の表示幅 / 右回答幅 / フッター非表示 / 保存ボタン表示」を追加
-
-問題用紙はCSS `zoom`で紙全体を等倍率縮小するため、英文・回答欄・手書きCanvasの位置関係は一緒に縮みます。
-
-## v0.6.0で作り直した理由
-
-v0.5系は機能追加を優先した結果、`practice.js` の上から別JSで関数を上書きし、さらに後続パッチを重ねる構成になっていました。またペン座標をページ全体に対して保存していたため、上の問題の高さが変わるだけで後ろの手書きがずれる問題が起きました。
-
-v0.6.0では新機能より先に、**更新しても紙と手書きが壊れない土台**へ作り直しています。
+変更履歴は [`CHANGELOG.md`](CHANGELOG.md)、詳細な実装・検証記録は [`作業報告書.md`](作業報告書.md) を参照してください。
 
 ## 崩してはいけない仕様
 
@@ -45,108 +26,45 @@ v0.6.0では新機能より先に、**更新しても紙と手書きが壊れな
 8. 「骨格S」と文法上の「S全体」を混同しない
 9. 範囲問題だけS全体の端まで評価する
 10. Vは動詞グループとして扱い、副詞・O・Cを混ぜない
-11. 問題を開始した時点の紙面Revisionを保存し、後の教材更新で既存紙面を変形させない
-12. 新しい手書きは問題単位の座標で保存する
-13. 既存のv0.5系手書きデータを勝手に消さない
+11. 問題開始時のPaper Snapshotを保存し、後の教材更新で既存紙面を変形させない
+12. 新しい手書きは問題単位の0〜1相対座標で保存する
+13. 既存v0.5系手書きデータを勝手に消さない
 14. 未着手問題を0点扱いしない
 15. 解いた紙面をChatGPTへZIPで渡せる
 16. APIキー・個人データを公開GitHubへ自動送信しない
-17. 破壊的操作にはバックアップ・復元手段を用意する
-18. GitHub Pagesの相対パスを維持する
+17. 破壊的操作には確認・Backup・Recoveryを用意する
+18. GitHub Pagesの相対Pathを維持する
 19. 答え合わせではページ全体を横スクロールさせず、左紙と右回答を同時に見られる状態を維持する
-20. 答え合わせ用ボタンを問題・回答カードの上へ浮かせない
-
-## 問題用紙とペン保存
-
-### v0.6以降の新しい紙
-
-手書きストロークはページ全体ではなく、**各問題の枠内を0〜1の相対座標**としてIndexedDBへ保存します。
-
-```text
-問6
-┌──────────────────────┐
-│ x=0.24 / y=0.61 の線 │
-└──────────────────────┘
-```
-
-そのため問1〜5の高さが変わっても、問6の手書きは問6と一緒に動きます。
-
-### 既存v0.5系データ
-
-旧データのページ座標はそのまま捨てず、IndexedDBの`legacyInk`へ移行します。実際に解いた可能性が高いS/V系2セットについてはGit履歴から当時の問題定義を保存してあります。
-
-- `data/legacy/foundation-sv-v051.json`
-- `data/legacy/sv-phrase-boundary-v051.json`
-
-新しい書き込みは問題単位方式、旧書き込みは互換レイヤーで表示します。
-
-## Paper Revision
-
-問題を開始した時点で、その問題セット全文を`paperSnapshots`へ保存します。
-
-```text
-attempt
- ├─ paperSnapshotId
- ├─ paperRevision
- └─ ink
-```
-
-後からGitHub上の問題文・回答欄・説明を変更しても、そのattemptは開始時の問題用紙を使い続けます。
-
-「新しい紙」を選んだ時だけ最新教材で新しいattemptを作ります。
-
-## 保存場所
-
-### localStorage
-
-軽いメタデータのみです。
-
-```text
-english-worksheet-lab-v6
-english-worksheet-prefs-v2
-english-worksheet-recovery-v2
-```
-
-### IndexedDB
-
-容量が増えやすいデータを保存します。
-
-```text
-english-worksheet-lab-v6
-├─ ink            問題単位の新しい手書き
-├─ legacyInk      v0.5系ページ座標の手書き
-├─ paperSnapshots 問題開始時の紙面
-└─ archives       やり直す前のattempt
-```
-
-完全バックアップJSONではlocalStorageとIndexedDBの両方を書き出します。
+20. fixed / sticky UIを問題・回答カードの上へ重ねない
 
 ## 画面構成
 
 ### 01 問題を選ぶ
 
-- 15セット / 200問
+- 問題セット一覧
 - 分野・難易度・進捗フィルター
 - 検索
 - 続きから
 - ChatGPT分析の推奨
 - 新しい紙を開始
 
+問題セット数・問題数は `data/packs/index.json` のManifestを正本とし、JSへ件数を重複hardcodeしません。
+
 ### 02 問題を解く
 
 - PDF風の白い問題用紙
-- 黒 / 赤 / 青 / 緑
+- 黒 / 赤 / 青 / 緑ペン
 - 蛍光マーカー
 - 細 / 中 / 太
 - 消しゴム
 - Undo / Redo
 - ページ消去
-- 85 / 100 / 115 / 130%
+- 表示倍率
 - 集中モード
 - 入力デバイス・筆圧表示
 - ページ学習時間
 
-問題用紙では解くために必要な情報だけを表示し、長い説明・正答・迷いタグは答え合わせ右側へ分離します。
+問題用紙には解くために必要な情報を優先し、長い説明・正答・迷いタグは答え合わせ側へ分離します。
 
 ### 答え合わせ
 
@@ -155,9 +73,9 @@ english-worksheet-lab-v6
 - 左: 解いた問題用紙
 - 右: 正答・解説・○△×・迷いタグ・メモ
 
-左右を独立スクロールします。左の問題用紙は950pxの内部レイアウトを維持したまま、左ペインに収まる倍率へ紙全体を縮小します。ページ全体には横スクロールを発生させません。
+左右を独立スクロールします。950pxの紙内部レイアウトは変えず、必要時は左ペインへ紙全体を等倍率縮小します。
 
-右ペインのヘッダーには「採点を保存して結果へ」を固定表示します。従来の下部フッターは答え合わせ中だけ非表示です。
+狭い画面では1カラムへ切り替え、ページ全体の不要な横overflowを発生させないことを優先します。
 
 ### 03 結果・復習
 
@@ -170,13 +88,64 @@ english-worksheet-lab-v6
 
 ### 04 弱点・ChatGPT分析
 
-提出範囲を選べます。
+提出範囲:
 
-- **今回の問題だけ**（標準）
+- 今回の問題だけ
 - 最近3回
 - すべての現在紙
 
-## ChatGPT提出ZIP v3
+ChatGPTから戻す分析JSONはSchema Version 2としてValidationしてから保存します。AI分析は学習補助情報であり、自動的に絶対正解として扱いません。
+
+## 問題用紙と保存
+
+### Paper Snapshot
+
+問題を開始した時点で、その問題セット全文をIndexedDBの `paperSnapshots` へ保存します。
+
+```text
+attempt
+ ├─ paperSnapshotId
+ ├─ paperRevision
+ └─ ink
+```
+
+教材JSONを更新しても、既存attemptは開始時の紙面を使い続けます。「新しい紙」を開始した時だけ最新教材を使います。
+
+### 手書き
+
+新しい手書きはページ全体ではなく、各問題枠内の0〜1相対座標としてIndexedDBへ保存します。
+
+これにより上の問題の高さが変わっても、後続問題の手書きは対象問題と一緒に移動します。
+
+旧v0.5系のページ座標は `legacyInk` と `data/legacy/` に隔離して互換表示します。
+
+## 保存場所
+
+### localStorage
+
+軽い状態・設定・Recoveryのみです。
+
+```text
+english-worksheet-lab-v6
+english-worksheet-prefs-v2
+english-worksheet-recovery-v2
+```
+
+### IndexedDB
+
+```text
+english-worksheet-lab-v6
+├─ ink            問題単位の新しい手書き
+├─ legacyInk      v0.5系ページ座標の手書き
+├─ paperSnapshots 問題開始時の紙面
+└─ archives       やり直す前のattempt
+```
+
+バックアップJSON読込時はSchemaと主要Store構造を検証し、Import途中に失敗した場合は開始前のIndexedDB SnapshotへのRollbackを試みます。
+
+複数タブで同じ学習データが更新された場合は `storage` eventで警告し、古いタブからの上書きリスクをユーザーへ知らせます。
+
+## ChatGPT提出ZIP
 
 ```text
 english_submission_YYYY-MM-DD.zip
@@ -192,17 +161,15 @@ english_submission_YYYY-MM-DD.zip
 └─ ChatGPTに見てほしいこと.txt
 ```
 
-紙PNGを最優先にし、ストローク履歴・自己採点・迷い・その時点の問題用紙Revisionを補助情報として分析します。
+紙PNGを優先し、ストローク履歴・自己採点・迷い・Paper Revisionを補助情報として分析します。
 
 ## 教材ルール
 
-教材方針の正本は`data/pedagogy.json`です。
+教材方針の正本は [`data/pedagogy.json`](data/pedagogy.json) です。
 
 - `skeleton`: 骨格読み
 - `range`: 範囲問題
 - `structure`: 構造分解
-
-README・画面・ChatGPT依頼文へ同じルールをばらばらに直書きしない方針です。
 
 ## ファイル構成
 
@@ -210,9 +177,12 @@ README・画面・ChatGPT依頼文へ同じルールをばらばらに直書き�
 /
 ├─ index.html
 ├─ css/
-│  ├─ app-v060.css
-│  └─ review.css
-├─ js/v060/
+│  ├─ app.css
+│  ├─ review.css
+│  └─ accessibility.css
+├─ js/app/
+│  ├─ meta.js
+│  ├─ validation.js
 │  ├─ app.js
 │  ├─ db.js
 │  ├─ state.js
@@ -232,62 +202,64 @@ README・画面・ChatGPT依頼文へ同じルールをばらばらに直書き�
 │  └─ packs/
 ├─ tests/
 │  ├─ validate.mjs
+│  ├─ unit.mjs
 │  └─ e2e.spec.mjs
 ├─ playwright.config.mjs
 ├─ package.json
 ├─ .github/workflows/validate.yml
+├─ CHANGELOG.md
 ├─ README.md
 └─ 作業報告書.md
 ```
 
-## 自動検証
-
-GitHub Actionsで次を実行します。
-
-### Static
-
-- v0.6 JS構文
-- JSON構文
-- 15セット / 200問をmanifestから検証
-- ID重複
-- 問題type必須値
-- curriculum参照
-- pedagogy定義
-- Paper Schema
-- HTML参照切れ
-- 旧v0.5パッチJSを実行時に読み込んでいないこと
-- 問題単位ペン保存コード
-- hardcodeされた旧14セット/188問診断が残っていないこと
-
-### Firefox E2E
-
-実際のFirefoxを起動して:
-
-1. 問題を開く
-2. 問2へ線を描く
-3. 答え合わせへ移動
-4. 問題DOMの高さ・幅が変わっていないことを確認
-5. Firefoxのsubpixel丸めによる縦位置差が2px以内であることを確認
-6. 問題canvasが問題サイズに一致していることを確認
-7. Runtime scriptがv0.6本体1本だけであることを確認
-8. 答え合わせ中にページ全体の横overflowが発生しないことを確認
-9. 左の問題用紙ペインと右回答ペインが両方十分な幅を持つことを確認
-10. 下部フッターが非表示で、右上の保存ボタンが表示されることを確認
-
 ## GitHub Pages
+
+公開URL:
 
 ```text
 https://elitemay.github.io/english/
 ```
 
-APIキー不要の静的HTML/CSS/JavaScript/JSONです。
+正式利用はGitHub Pagesを前提とします。HTML / CSS / JavaScript / JSONは相対Pathで参照し、localhostやPC固有絶対Pathへ依存しません。
+
+外部APIキーは不要です。
+
+## 自動検証
+
+GitHub Actionsで以下を確認します。
+
+- JavaScript / MJS構文
+- Import ValidationのUnit Test
+- JSON / Manifest / ID / Schema整合
+- Runtime / CSS参照切れ
+- Versioned Runtimeの再混入
+- Version / Packageの整合
+- localhost / PC絶対Path /代表的Secretの混入
+- 公開JSONへのData URL混入
+- Firefox E2E
+- 問題単位Canvas geometry
+- 答え合わせの横overflow
+- 低い縦解像度での固定UI重なり
+- Small viewportでの主要導線
+
+## 開発・更新時の注意
+
+- 新しい修正を `v063.js` のようなPatch Runtimeとして重ねない
+- App Version / Build / Schemaは `js/app/meta.js` を更新する
+- 問題件数はManifestから算出する
+- 保存Schemaを変える場合はMigration / Backup / Rollbackを先に設計する
+- READMEは現在仕様を中心にし、Version履歴はCHANGELOGへ書く
+- 一度直した重大Bugには可能な範囲でRegression Testを追加する
 
 ## 既知・未確認
 
-- Windows実機のペンタブで長時間書いた場合の遅延
-- 実機Firefoxで`pointerType=pen`と可変pressureが届くか
-- v0.5系の旧ページ座標が、すべての過去紙面でピクセル単位まで完全一致するか
-- 大量ページを一度にPNG→ZIP化した時の実機性能
-- ブラウザごとのIndexedDB上限差
+### Not verified
 
-未確認の内容を確認済みとして扱わないでください。
+- Windows実機のペンタブで長時間書いた場合の遅延
+- 実機Firefoxで `pointerType=pen` と可変pressureが届くか
+- v0.5系の旧ページ座標がすべての過去紙面でピクセル単位まで一致するか
+- 大量ページを一度にPNG→ZIP化した場合の実機性能
+- ブラウザごとのIndexedDB容量差
+- Chromium実ブラウザでの今回のRegression一式
+
+これらはCI成功だけで確認済みとして扱いません。
