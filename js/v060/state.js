@@ -1,6 +1,6 @@
 import {setLegacyPageInk,putPaperSnapshot,putArchive,clearAttemptInk} from './db.js';
 
-export const APP={version:'v0.6.0',build:'20260830-8',stateSchema:6,paperSchema:6,analysisSchema:2,submissionPackage:3};
+export const APP={version:'v0.6.1',build:'20260830-9',stateSchema:6,paperSchema:6,analysisSchema:2,submissionPackage:3};
 const STATE_KEY='english-worksheet-lab-v6';
 const OLD_KEYS=['english-worksheet-lab-v4','english-worksheet-lab-v3','english-worksheet-lab-v2'];
 const PREF_KEY='english-worksheet-prefs-v2';
