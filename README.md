@@ -6,7 +6,7 @@
 
 ## Project Profile
 
-Adopted Guide: `web-project-guide` **1.9.0**
+Adopted Guide: `web-project-guide` **1.10.0**
 
 Profiles: **STATIC + DATA + MEDIA + AI-HANDOFF + TOOL**
 
@@ -266,7 +266,9 @@ english-worksheet-lab-v6
 │  └─ e2e.spec.mjs
 ├─ playwright.config.mjs
 ├─ package.json
-├─ .github/workflows/validate.yml
+├─ .github/
+│  ├─ dependabot.yml
+│  └─ workflows/validate.yml
 ├─ CHANGELOG.md
 ├─ README.md
 └─ 作業報告書.md
@@ -284,11 +286,27 @@ https://elitemay.github.io/english/
 
 外部APIキーは不要です。
 
-## 自動検証
+## 自動検証 / GitHub運用
 
-GitHub Actionsで以下を確認します。
+共通BaselineとProject固有Contractを分離します。
 
+### Common Baseline
+
+`web-project-guide` のReusable Workflowを**確認済みCommit SHA固定**で呼び出します。
+
+共通側へ任せるもの:
+
+- Node.js 22
 - JavaScript / MJS構文
+- committed JSON parse
+- read-only contents permission
+
+`@main`では参照せず、Guide更新時に新SHAをReviewして段階的に更新します。
+
+### English固有Validation
+
+各Projectで意味が異なるため、このRepositoryへ残します。
+
 - Import ValidationのUnit Test
 - Diagnostics Sanitize / Ring Buffer / Safe defaultのUnit Test
 - JSON / Manifest / ID / Schema整合
@@ -306,6 +324,10 @@ GitHub Actionsで以下を確認します。
 - Small viewportでの主要導線
 - 開発診断JSONのDownload導線
 
+### Dependabot
+
+npmとGitHub Actionsを週1回確認します。PRノイズを抑えるためgroup化し、**無条件Auto Mergeは行いません**。Dependency PRも通常のStatic / Unit / Firefox E2Eを通してからMergeします。
+
 ## 開発・更新時の注意
 
 - 作業開始時は `AGENTS.md` を入口に `README.md` / `PROJECT_LEARNINGS.md` / 最新 `web-project-guide` を確認する
@@ -316,6 +338,8 @@ GitHub Actionsで以下を確認します。
 - READMEは現在仕様を中心にし、Version履歴はCHANGELOGへ書く
 - 一度直した重大Bugには可能な範囲でRegression TestとProject Learningを追加する
 - Remote Diagnostics / Analytics / Cloud Providerを勝手にCore依存として追加しない
+- Common Reusable WorkflowはCommit SHA固定とし、Project固有Validator / E2Eを中央へ移さない
+- Dependency Updateを無条件Auto Mergeしない
 - AI生成Codeも既存仕様・Static / Unit / Browser Test・最終Commit Validationを通す
 
 ## 既知・未確認
