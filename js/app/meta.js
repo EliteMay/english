@@ -1,6 +1,6 @@
 export const APP=Object.freeze({
-  version:'v0.6.2',
-  build:'20260830-10',
+  version:'v0.7.0',
+  build:'20260831-1',
   stateSchema:6,
   paperSchema:6,
   analysisSchema:2,
@@ -8,6 +8,8 @@ export const APP=Object.freeze({
 });
 
 export const PROJECT=Object.freeze({
-  guideVersion:'1.1.0',
-  profiles:Object.freeze(['STATIC','DATA','MEDIA','AI-HANDOFF','TOOL'])
+  key:'english-worksheet-lab',
+  guideVersion:'1.9.0',
+  profiles:Object.freeze(['STATIC','DATA','MEDIA','AI-HANDOFF','TOOL']),
+  remoteDiagnostics:false
 });
