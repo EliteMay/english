@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v0.7.0 / Build 20260831-2 — 2026-08-31
+
+`web-project-guide` 1.10.0 のCross-Repository GitHub Infrastructureへ内部運用を更新。**公開画面のHTML / CSS / Layout / Visualは変更していない。**
+
+- Guide採用Versionを1.10.0へ更新
+- `web-project-guide` のReusable Web BaselineをCommit SHA固定で導入
+- Common BaselineへJS / MJS syntaxとJSON parseを分離
+- English固有のWorkbook validator / Unit / Firefox E2EはこのRepositoryへ維持
+- Reusable Workflowの`@main`追従を禁止するStatic Guardを追加
+- npm / GitHub Actions用Dependabotをweekly・grouped設定で追加
+- Dependency PRの無条件Auto Mergeは採用しない
+- 古いCIの責務重複を整理し、Common Baseline → Project Static → Firefox E2Eの順に実行
+- App Version表示はv0.7.0を維持し、内部Buildだけ更新
+
+State / Paper / Analysis Schema、IndexedDB、手書き形式、教材Data、`index.html`、`css/`は変更していない。
+
 ## v0.7.0 — 2026-08-31
 
 `web-project-guide` 1.9.0 に合わせ、Project MemoryとLocal-first Development Diagnosticsを追加。
