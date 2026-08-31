@@ -6,13 +6,13 @@
 
 ## Project Profile
 
-Adopted Guide: `web-project-guide` **1.1.0**
+Adopted Guide: `web-project-guide` **1.9.0**
 
 Profiles: **STATIC + DATA + MEDIA + AI-HANDOFF + TOOL**
 
-現在のApp Version / Build / Schemaの正本は [`js/app/meta.js`](js/app/meta.js) です。READMEへVersion値を重複記載しません。
+現在のApp Version / Build / Schema / Guide Versionの正本は [`js/app/meta.js`](js/app/meta.js) です。READMEへVersion値を重複記載しません。
 
-変更履歴は [`CHANGELOG.md`](CHANGELOG.md)、詳細な実装・検証記録は [`作業報告書.md`](作業報告書.md) を参照してください。
+変更履歴は [`CHANGELOG.md`](CHANGELOG.md)、詳細な実装・検証記録は [`作業報告書.md`](作業報告書.md)、長期的な失敗・成功・再発防止知識は [`PROJECT_LEARNINGS.md`](PROJECT_LEARNINGS.md) を参照してください。Coding Agent向けの入口は [`AGENTS.md`](AGENTS.md) です。
 
 ## 崩してはいけない仕様
 
@@ -36,6 +36,8 @@ Profiles: **STATIC + DATA + MEDIA + AI-HANDOFF + TOOL**
 18. GitHub Pagesの相対Pathを維持する
 19. 答え合わせではページ全体を横スクロールさせず、左紙と右回答を同時に見られる状態を維持する
 20. fixed / sticky UIを問題・回答カードの上へ重ねない
+21. Runtime Diagnosticsへ学習回答本文・手書きStroke・File本文・Token等を自動記録しない
+22. Remote DiagnosticsをCore機能の必須依存にしない。現在はRemote Handoffを無効のまま維持する
 
 ## 画面構成
 
@@ -96,6 +98,69 @@ Profiles: **STATIC + DATA + MEDIA + AI-HANDOFF + TOOL**
 
 ChatGPTから戻す分析JSONはSchema Version 2としてValidationしてから保存します。AI分析は学習補助情報であり、自動的に絶対正解として扱いません。
 
+## 学習Handoffと開発診断を分ける
+
+このProjectでは、用途の違う2種類のHandoffを混ぜません。
+
+### 学習分析: ChatGPT提出ZIP
+
+実際に解いた紙・手書き・問題文が分析EvidenceなのでBinaryを含むZIPを維持します。
+
+```text
+english_submission_YYYY-MM-DD.zip
+├─ papers/
+│  └─ 実際に解いた問題用紙.png
+├─ manifest.json
+├─ paper-index.json
+├─ paper-snapshots.json
+├─ ink-history.json
+├─ learning-data.json
+├─ questions.json
+├─ analysis-return.schema.json
+└─ ChatGPTに見てほしいこと.txt
+```
+
+紙PNGを優先し、ストローク履歴・自己採点・迷い・Paper Revisionを補助情報として分析します。
+
+### 不具合調査: 開発診断JSON
+
+「データ管理 → 開発診断JSON」から、Sanitize済みの小さいRuntime Evidenceを書き出せます。
+
+主な内容:
+
+- App Version / Build / Schema / Guide Version
+- 現在画面
+- Session開始後の主要Breadcrumb
+- Viewport / Browserの最小Summary
+- JavaScript Error / Unhandled Rejection
+- Catalog fetch failure
+- Backup Import / Rollback結果
+- Storage使用量Summary
+- Feature Detection
+
+記録しないもの:
+
+- 学習回答本文
+- 手書きStroke
+- 問題用紙画像
+- Import File本文
+- Password / Token / Cookie / API Key
+- Binary data
+
+診断Eventは `english-worksheet-diagnostics-v1` に直近120件だけ保持します。診断Log自身を無限保存しません。
+
+### Remote Diagnostic Handoff
+
+現在は **disabled** です。
+
+理由:
+
+- このサイトはGitHub PagesだけでCore機能が成立している
+- 手書き・紙面を含む学習分析はBinary ZIPが必要で、Compact Runtime Snapshotでは代替できない
+- Remote Providerの無料枠・Security・匿名書込経路を必要性なしに増やさない
+
+将来Remote診断を導入する場合も、Local Diagnostics / JSON ExportをFallbackとして残し、Provider停止で学習機能が止まらない構成にします。
+
 ## 問題用紙と保存
 
 ### Paper Snapshot
@@ -123,12 +188,13 @@ attempt
 
 ### localStorage
 
-軽い状態・設定・Recoveryのみです。
+軽い状態・設定・Recovery・上限付き開発診断のみです。
 
 ```text
 english-worksheet-lab-v6
 english-worksheet-prefs-v2
 english-worksheet-recovery-v2
+english-worksheet-diagnostics-v1
 ```
 
 ### IndexedDB
@@ -145,24 +211,6 @@ english-worksheet-lab-v6
 
 複数タブで同じ学習データが更新された場合は `storage` eventで警告し、古いタブからの上書きリスクをユーザーへ知らせます。
 
-## ChatGPT提出ZIP
-
-```text
-english_submission_YYYY-MM-DD.zip
-├─ papers/
-│  └─ 実際に解いた問題用紙.png
-├─ manifest.json
-├─ paper-index.json
-├─ paper-snapshots.json
-├─ ink-history.json
-├─ learning-data.json
-├─ questions.json
-├─ analysis-return.schema.json
-└─ ChatGPTに見てほしいこと.txt
-```
-
-紙PNGを優先し、ストローク履歴・自己採点・迷い・Paper Revisionを補助情報として分析します。
-
 ## 教材ルール
 
 教材方針の正本は [`data/pedagogy.json`](data/pedagogy.json) です。
@@ -171,11 +219,21 @@ english_submission_YYYY-MM-DD.zip
 - `range`: 範囲問題
 - `structure`: 構造分解
 
+## Project Memory
+
+- `作業報告書.md`: 今回何を変更・検証したか
+- `PROJECT_LEARNINGS.md`: 高コストBug、成功設計、再発防止
+- Runtime Diagnostics: 実際のSession・Error・Breadcrumb
+
+重大Bugを直した場合は、可能な限り **Project Learnings + Regression Guard + Work Report** をセットで更新します。
+
 ## ファイル構成
 
 ```text
 /
 ├─ index.html
+├─ AGENTS.md
+├─ PROJECT_LEARNINGS.md
 ├─ css/
 │  ├─ app.css
 │  ├─ review.css
@@ -183,6 +241,7 @@ english_submission_YYYY-MM-DD.zip
 ├─ js/app/
 │  ├─ meta.js
 │  ├─ validation.js
+│  ├─ diagnostics.js
 │  ├─ app.js
 │  ├─ db.js
 │  ├─ state.js
@@ -197,6 +256,7 @@ english_submission_YYYY-MM-DD.zip
 ├─ data/
 │  ├─ pedagogy.json
 │  ├─ curriculum.json
+│  ├─ diagnostics.schema.json
 │  ├─ analysis-return.schema.json
 │  ├─ legacy/
 │  └─ packs/
@@ -230,10 +290,13 @@ GitHub Actionsで以下を確認します。
 
 - JavaScript / MJS構文
 - Import ValidationのUnit Test
+- Diagnostics Sanitize / Ring Buffer / Safe defaultのUnit Test
 - JSON / Manifest / ID / Schema整合
 - Runtime / CSS参照切れ
 - Versioned Runtimeの再混入
-- Version / Packageの整合
+- Version / Package / Guide Versionの整合
+- `PROJECT_LEARNINGS.md` / `AGENTS.md` / Diagnostics Schemaの存在
+- Runtime DiagnosticsがRemoteへ自動送信しないこと
 - localhost / PC絶対Path /代表的Secretの混入
 - 公開JSONへのData URL混入
 - Firefox E2E
@@ -241,15 +304,19 @@ GitHub Actionsで以下を確認します。
 - 答え合わせの横overflow
 - 低い縦解像度での固定UI重なり
 - Small viewportでの主要導線
+- 開発診断JSONのDownload導線
 
 ## 開発・更新時の注意
 
+- 作業開始時は `AGENTS.md` を入口に `README.md` / `PROJECT_LEARNINGS.md` / 最新 `web-project-guide` を確認する
 - 新しい修正を `v063.js` のようなPatch Runtimeとして重ねない
 - App Version / Build / Schemaは `js/app/meta.js` を更新する
 - 問題件数はManifestから算出する
 - 保存Schemaを変える場合はMigration / Backup / Rollbackを先に設計する
 - READMEは現在仕様を中心にし、Version履歴はCHANGELOGへ書く
-- 一度直した重大Bugには可能な範囲でRegression Testを追加する
+- 一度直した重大Bugには可能な範囲でRegression TestとProject Learningを追加する
+- Remote Diagnostics / Analytics / Cloud Providerを勝手にCore依存として追加しない
+- AI生成Codeも既存仕様・Static / Unit / Browser Test・最終Commit Validationを通す
 
 ## 既知・未確認
 
@@ -260,6 +327,7 @@ GitHub Actionsで以下を確認します。
 - v0.5系の旧ページ座標がすべての過去紙面でピクセル単位まで一致するか
 - 大量ページを一度にPNG→ZIP化した場合の実機性能
 - ブラウザごとのIndexedDB容量差
-- Chromium実ブラウザでの今回のRegression一式
+- Chromium実ブラウザでのRegression一式
+- 開発診断JSONを長期間利用したときの実機Storage影響（120 Event上限あり）
 
 これらはCI成功だけで確認済みとして扱いません。

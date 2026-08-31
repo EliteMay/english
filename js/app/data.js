@@ -1,9 +1,19 @@
 import {APP,clone} from './state.js';
 import {getPaperSnapshot} from './db.js';
+import {diagnosticEvent} from './diagnostics.js';
 
 export let catalog={manifest:null,curriculum:null,pedagogy:null,packs:[],packMap:new Map(),legacyMap:new Map()};
 
-async function getJson(url){const r=await fetch(`${url}${url.includes('?')?'&':'?'}b=${encodeURIComponent(APP.build)}`,{cache:'no-store'});if(!r.ok)throw new Error(`${url} を読み込めません (${r.status})`);return r.json()}
+async function getJson(url){
+  try{
+    const r=await fetch(`${url}${url.includes('?')?'&':'?'}b=${encodeURIComponent(APP.build)}`,{cache:'no-store'});
+    if(!r.ok)throw new Error(`${url} を読み込めません (${r.status})`);
+    return await r.json();
+  }catch(err){
+    diagnosticEvent('network.failure',{resource:url,message:err?.message||'fetch failed'},'error');
+    throw err;
+  }
+}
 
 export async function loadCatalog(){
   const manifest=await getJson('./data/packs/index.json');

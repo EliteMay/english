@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 2,
+  "project": {
+    "name": "English Worksheet Lab",
+    "projectKey": "english-worksheet-lab",
+    "appVersion": "",
+    "build": "",
+    "dataSchemaVersion": null
+  },
+  "capture": {
+    "capturedAt": "",
+    "sessionId": "",
+    "snapshotId": "",
+    "route": "",
+    "reason": "manual",
+    "severity": "info"
+  },
+  "environment": {
+    "viewport": {"width": null, "height": null, "devicePixelRatio": null},
+    "language": "",
+    "online": null,
+    "platformSummary": "",
+    "browserSummary": "",
+    "features": {}
+  },
+  "runtime": {
+    "initialization": [],
+    "featureFlags": {"remoteDiagnostics": false},
+    "serviceWorker": null
+  },
+  "breadcrumbs": [],
+  "errors": [],
+  "networkFailures": [],
+  "storage": {
+    "available": null,
+    "types": ["localStorage", "IndexedDB"],
+    "estimatedUsageBytes": null,
+    "estimatedQuotaBytes": null,
+    "summary": {}
+  },
+  "performance": {"summary": {}},
+  "handoff": {
+    "sanitized": true,
+    "remoteEligible": false,
+    "payloadBytes": null,
+    "retentionClass": "normal",
+    "containsBinary": false,
+    "containsSecrets": false
+  },
+  "notes": []
+}

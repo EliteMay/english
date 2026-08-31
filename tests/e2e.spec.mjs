@@ -67,7 +67,7 @@ test('small viewport keeps primary navigation and library usable without page ov
   expect(overflow).toBeLessThanOrEqual(2);
 });
 
-test('data dialog keeps storage summary and recovery controls visible',async({page})=>{
+test('data dialog exposes bounded local diagnostics and download handoff',async({page})=>{
   await page.goto('/');
   await page.locator('#dataBtn').click();
   await expect(page.locator('#dataDialog')).toBeVisible();
@@ -75,6 +75,13 @@ test('data dialog keeps storage summary and recovery controls visible',async({pa
   await expect(page.locator('#backupBtn')).toBeVisible();
   await expect(page.locator('#restoreRecoveryBtn')).toBeVisible();
   await expect(page.locator('#diagnoseBtn')).toBeVisible();
+  await expect(page.locator('#downloadDiagnosticsBtn')).toBeVisible();
+  await expect(page.locator('#clearDiagnosticsBtn')).toBeVisible();
+  await expect(page.locator('#runtimeDiagnosticsSummary')).toContainText('開発診断:');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#downloadDiagnosticsBtn').click();
+  const download=await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/^english_diagnostics_.*\.json$/);
 });
 
 test('runtime uses stable non-versioned paths',async({page})=>{

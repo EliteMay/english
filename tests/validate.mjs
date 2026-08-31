@@ -9,13 +9,18 @@ const json=p=>JSON.parse(read(p));
 const assert=(x,m)=>{if(!x)throw new Error(m)};
 const walk=dir=>fs.readdirSync(path.join(root,dir),{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)]);
 
-const manifest=json('data/packs/index.json'),pedagogy=json('data/pedagogy.json'),pkg=json('package.json');
+const manifest=json('data/packs/index.json'),pedagogy=json('data/pedagogy.json'),pkg=json('package.json'),diagnosticSchema=json('data/diagnostics.schema.json');
 assert(pkg.version===APP.version.replace(/^v/,''),'package version must match js/app/meta.js');
-assert(PROJECT.guideVersion==='1.1.0','guide adoption version mismatch');
+assert(PROJECT.guideVersion==='1.9.0','guide adoption version mismatch');
 assert(PROJECT.profiles.join('+')==='STATIC+DATA+MEDIA+AI-HANDOFF+TOOL','project profiles mismatch');
+assert(PROJECT.remoteDiagnostics===false,'remote diagnostics must remain opt-in/disabled');
 assert(manifest.paperSchemaVersion===APP.paperSchema,'paperSchemaVersion must match APP.paperSchema');
 assert(manifest.expectedCounts?.packs&&manifest.expectedCounts?.questions,'expectedCounts missing');
 assert(pedagogy.modes?.skeleton&&pedagogy.modes?.range&&pedagogy.modes?.structure,'pedagogy modes missing');
+assert(diagnosticSchema.schemaVersion===2,'diagnostics schema must be v2');
+assert(diagnosticSchema.project?.projectKey===PROJECT.key,'diagnostics projectKey mismatch');
+assert(diagnosticSchema.handoff?.remoteEligible===false,'diagnostics schema remoteEligible must default false');
+assert(diagnosticSchema.handoff?.containsBinary===false&&diagnosticSchema.handoff?.containsSecrets===false,'diagnostics safe defaults missing');
 
 const packs=manifest.files.flatMap(f=>json('data/packs/'+f)),questions=packs.flatMap(p=>p.questions.map(q=>({p,q})));
 assert(packs.length===manifest.expectedCounts.packs,`pack count ${packs.length}`);
@@ -37,6 +42,8 @@ const curriculum=json('data/curriculum.json');
 assert(pids.every(id=>curriculum.packs?.[id]),'pack missing in curriculum');
 json('data/analysis-return.schema.json');json('data/legacy/foundation-sv-v051.json');json('data/legacy/sv-phrase-boundary-v051.json');
 
+for(const requiredRoot of['README.md','CHANGELOG.md','PROJECT_LEARNINGS.md','AGENTS.md','作業報告書.md'])assert(fs.existsSync(path.join(root,requiredRoot)),`missing project memory/router file: ${requiredRoot}`);
+
 const html=read('index.html'),refs=[...html.matchAll(/(?:src|href)="\.\/([^"?#]+)(?:\?[^"#]*)?"/g)].map(m=>m[1]);
 for(const r of refs)assert(fs.existsSync(path.join(root,r)),`broken ref ${r}`);
 for(const required of['js/app/app.js','css/app.css','css/review.css','css/accessibility.css'])assert(refs.includes(required),`runtime ref missing: ${required}`);
@@ -45,9 +52,11 @@ assert(!refs.some(r=>/(^|\/)v\d{3}(\/|$)|app-v\d/i.test(r)),'versioned runtime p
 assert(!fs.existsSync(path.join(root,'js/v060')),'old versioned runtime directory remains');
 assert(!fs.existsSync(path.join(root,'css/app-v060.css')),'old versioned CSS remains');
 assert(html.includes('id="dataStats" class="data-stats"'),'data dialog styling hook missing');
+assert(html.includes('id="downloadDiagnosticsBtn"'),'diagnostic export control missing');
+assert(html.includes('id="clearDiagnosticsBtn"'),'diagnostic clear control missing');
 
-for(const f of['meta.js','validation.js','db.js','state.js','data.js','library.js','practice.js','review-layout.js','ink.js','results.js','analysis.js','export.js','app.js'])assert(fs.existsSync(path.join(root,'js/app',f)),`missing js/app/${f}`);
-const app=read('js/app/app.js'),ink=read('js/app/ink.js'),state=read('js/app/state.js'),practice=read('js/app/practice.js'),reviewLayout=read('js/app/review-layout.js');
+for(const f of['meta.js','validation.js','diagnostics.js','db.js','state.js','data.js','library.js','practice.js','review-layout.js','ink.js','results.js','analysis.js','export.js','app.js'])assert(fs.existsSync(path.join(root,'js/app',f)),`missing js/app/${f}`);
+const app=read('js/app/app.js'),ink=read('js/app/ink.js'),state=read('js/app/state.js'),practice=read('js/app/practice.js'),reviewLayout=read('js/app/review-layout.js'),diagnostics=read('js/app/diagnostics.js');
 assert(ink.includes('getQuestionInk')&&ink.includes('questionId'),'question-local ink missing');
 assert(state.includes('paperSnapshotId')&&state.includes('paperRevision'),'paper snapshot missing');
 assert(app.includes('expectedCounts')&&!app.includes('===14')&&!app.includes('===188'),'diagnostic hardcode remains');
@@ -57,14 +66,23 @@ assert(!reviewLayout.includes('MutationObserver'),'review layout must not patch 
 assert(practice.includes('class="review-finish-proxy"'),'review finish action must be rendered by practice renderer');
 assert(practice.includes('appVersion:APP.version'),'session version must use metadata source');
 assert(!/appVersion:\s*['"]v\d/.test(practice),'hardcoded session appVersion remains');
+assert(diagnostics.includes('MAX_EVENTS=120'),'bounded diagnostic ring buffer missing');
+assert(diagnostics.includes('remoteEligible:false'),'local-first diagnostic handoff default missing');
+assert(!/fetch\s*\(|supabase/i.test(diagnostics),'diagnostics module must not auto-upload remotely');
+assert(diagnostics.includes('containsBinary:false')&&diagnostics.includes('containsSecrets:false'),'diagnostic safe handoff metadata missing');
 
 const publicText=['index.html',...walk('js/app').filter(f=>f.endsWith('.js')),...walk('data').filter(f=>f.endsWith('.json'))].map(read).join('\n');
 assert(!/localhost|127\.0\.0\.1|[A-Za-z]:\\\\/.test(publicText),'localhost or PC absolute path found in public runtime/data');
 assert(!/(sk-[A-Za-z0-9_-]{16,}|AIza[0-9A-Za-z_-]{20,}|SUPABASE_SERVICE_ROLE)/.test(publicText),'possible secret found in public files');
 for(const f of walk('data').filter(f=>f.endsWith('.json')))assert(!/"data:[^"\s]+;base64,/i.test(read(f)),`Data URL found in public JSON: ${f}`);
 
-const readme=read('README.md');
+const readme=read('README.md'),learnings=read('PROJECT_LEARNINGS.md'),agents=read('AGENTS.md');
 assert(!/^##\s+v\d/m.test(readme),'README is becoming a version history dump; move history to CHANGELOG');
 assert(readme.includes('STATIC + DATA + MEDIA + AI-HANDOFF + TOOL'),'README project profiles missing');
+assert(readme.includes('1.9.0'),'README guide version stale');
+assert(readme.includes('PROJECT_LEARNINGS.md'),'README project learnings route missing');
+assert(/PL-F-\d{3}/.test(learnings)&&/PL-S-\d{3}/.test(learnings),'PROJECT_LEARNINGS lacks durable entries');
+assert(agents.includes('Remote handoff: disabled'),'AGENTS remote diagnostics fallback missing');
+assert(agents.includes('js/app/diagnostics.js'),'AGENTS diagnostics ownership missing');
 
 console.log(`OK ${APP.version}: ${packs.length} packs / ${questions.length} questions / ${refs.length} runtime refs / Guide ${PROJECT.guideVersion}`);
