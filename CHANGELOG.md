@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## v0.7.0 — 2026-08-31
+
+`web-project-guide` 1.9.0 に合わせ、Project MemoryとLocal-first Development Diagnosticsを追加。
+
+- `PROJECT_LEARNINGS.md` を追加し、高コストBug・成功Pattern・Regression Guardを長期記録
+- `AGENTS.md` を追加し、AI Coding Agent向けの薄いProject Routerを用意
+- `js/app/diagnostics.js` を追加
+  - App Version / Build / Schema / Guide Version
+  - View / Viewport / Browserの最小情報
+  - 重要Breadcrumb
+  - JavaScript Error / Unhandled Rejection
+  - Catalog fetch failure
+  - Backup Import / Rollback結果
+  - Storage概要
+- 診断Eventを直近120件のRing Bufferに制限
+- 診断文字列のURL query / fragmentと代表的Secret patternをSanitize
+- `data/diagnostics.schema.json` Schema v2を追加
+- データ管理画面へ「開発診断JSON」「診断ログ消去」を追加
+- Remote Diagnostic Handoffは明示的にdisabled
+- 学習分析用ZIPと不具合調査用Diagnostics JSONを役割分離
+- Unit TestへDiagnostics sanitize / ring buffer / safe defaultを追加
+- Firefox E2EへDiagnostic JSON download導線を追加
+- Static ValidatorへGuide 1.9.0 / Project Learnings / AGENTS / Diagnostics safe default検査を追加
+
+保存State Schema / Paper Schema / IndexedDB Store / 既存手書き形式は変更していない。
+
 ## v0.6.2 — 2026-08-30
 
 `web-project-guide` 1.1.0 に合わせた保守・品質改善。
