@@ -7,21 +7,28 @@ on:
 permissions:
   contents: read
 jobs:
-  static:
+  baseline:
+    uses: EliteMay/web-project-guide/.github/workflows/reusable-web-baseline.yml@c526f3fc37c89972480b69b249ace017437f6813
+    with:
+      node-version: '22'
+      syntax-paths: 'js/app tests'
+      check-json: true
+
+  project-static:
+    needs: baseline
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check JavaScript syntax
-        run: find js/app tests -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
       - name: Unit tests
         run: node tests/unit.mjs
       - name: Validate workbook and runtime references
         run: node tests/validate.mjs
+
   firefox-e2e:
-    needs: static
+    needs: project-static
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
