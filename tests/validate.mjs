@@ -8,10 +8,11 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const json=p=>JSON.parse(read(p));
 const assert=(x,m)=>{if(!x)throw new Error(m)};
 const walk=dir=>fs.readdirSync(path.join(root,dir),{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)]);
+const GUIDE_BASELINE_SHA='c526f3fc37c89972480b69b249ace017437f6813';
 
 const manifest=json('data/packs/index.json'),pedagogy=json('data/pedagogy.json'),pkg=json('package.json'),diagnosticSchema=json('data/diagnostics.schema.json');
 assert(pkg.version===APP.version.replace(/^v/,''),'package version must match js/app/meta.js');
-assert(PROJECT.guideVersion==='1.9.0','guide adoption version mismatch');
+assert(PROJECT.guideVersion==='1.10.0','guide adoption version mismatch');
 assert(PROJECT.profiles.join('+')==='STATIC+DATA+MEDIA+AI-HANDOFF+TOOL','project profiles mismatch');
 assert(PROJECT.remoteDiagnostics===false,'remote diagnostics must remain opt-in/disabled');
 assert(manifest.paperSchemaVersion===APP.paperSchema,'paperSchemaVersion must match APP.paperSchema');
@@ -71,6 +72,18 @@ assert(diagnostics.includes('remoteEligible:false'),'local-first diagnostic hand
 assert(!/fetch\s*\(|supabase/i.test(diagnostics),'diagnostics module must not auto-upload remotely');
 assert(diagnostics.includes('containsBinary:false')&&diagnostics.includes('containsSecrets:false'),'diagnostic safe handoff metadata missing');
 
+const workflow=read('.github/workflows/validate.yml'),dependabot=read('.github/dependabot.yml');
+const pinnedBaseline=`EliteMay/web-project-guide/.github/workflows/reusable-web-baseline.yml@${GUIDE_BASELINE_SHA}`;
+assert(workflow.includes(pinnedBaseline),'shared reusable baseline must be pinned to reviewed guide commit SHA');
+assert(!/reusable-web-baseline\.yml@(main|master)\b/.test(workflow),'shared reusable baseline must not track a moving branch');
+assert(workflow.includes('needs: baseline'),'project-specific validation must depend on common baseline');
+assert(workflow.includes('Firefox UI test'),'English-specific Firefox E2E must remain local');
+assert(workflow.includes('node tests/validate.mjs'),'English-specific validator must remain local');
+assert(dependabot.includes('package-ecosystem: npm'),'npm Dependabot missing');
+assert(dependabot.includes('package-ecosystem: github-actions'),'GitHub Actions Dependabot missing');
+assert((dependabot.match(/interval:\s*weekly/g)||[]).length>=2,'Dependabot should use low-noise weekly schedules');
+assert(!/auto.?merge/i.test(dependabot),'Dependabot config must not enable unconditional auto merge');
+
 const publicText=['index.html',...walk('js/app').filter(f=>f.endsWith('.js')),...walk('data').filter(f=>f.endsWith('.json'))].map(read).join('\n');
 assert(!/localhost|127\.0\.0\.1|[A-Za-z]:\\\\/.test(publicText),'localhost or PC absolute path found in public runtime/data');
 assert(!/(sk-[A-Za-z0-9_-]{16,}|AIza[0-9A-Za-z_-]{20,}|SUPABASE_SERVICE_ROLE)/.test(publicText),'possible secret found in public files');
@@ -79,10 +92,11 @@ for(const f of walk('data').filter(f=>f.endsWith('.json')))assert(!/"data:[^"\s]
 const readme=read('README.md'),learnings=read('PROJECT_LEARNINGS.md'),agents=read('AGENTS.md');
 assert(!/^##\s+v\d/m.test(readme),'README is becoming a version history dump; move history to CHANGELOG');
 assert(readme.includes('STATIC + DATA + MEDIA + AI-HANDOFF + TOOL'),'README project profiles missing');
-assert(readme.includes('1.9.0'),'README guide version stale');
+assert(readme.includes('1.10.0'),'README guide version stale');
 assert(readme.includes('PROJECT_LEARNINGS.md'),'README project learnings route missing');
 assert(/PL-F-\d{3}/.test(learnings)&&/PL-S-\d{3}/.test(learnings),'PROJECT_LEARNINGS lacks durable entries');
 assert(agents.includes('Remote handoff: disabled'),'AGENTS remote diagnostics fallback missing');
 assert(agents.includes('js/app/diagnostics.js'),'AGENTS diagnostics ownership missing');
+assert(agents.includes('1.10.0'),'AGENTS guide version stale');
 
-console.log(`OK ${APP.version}: ${packs.length} packs / ${questions.length} questions / ${refs.length} runtime refs / Guide ${PROJECT.guideVersion}`);
+console.log(`OK ${APP.version} build ${APP.build}: ${packs.length} packs / ${questions.length} questions / ${refs.length} runtime refs / Guide ${PROJECT.guideVersion}`);

@@ -15,7 +15,7 @@ assert.equal(validateAnalysis({...analysis,weaknesses:{}}).ok,false);
 
 assert.match(APP.version,/^v\d+\.\d+\.\d+$/);
 assert.ok(APP.build);
-assert.equal(PROJECT.guideVersion,'1.9.0');
+assert.equal(PROJECT.guideVersion,'1.10.0');
 assert.equal(PROJECT.remoteDiagnostics,false);
 assert.deepEqual(PROJECT.profiles,['STATIC','DATA','MEDIA','AI-HANDOFF','TOOL']);
 
