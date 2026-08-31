@@ -10,6 +10,7 @@ let memoryEvents=[];
 
 const now=()=>new Date().toISOString();
 const store=()=>{try{return globalThis.localStorage||null}catch{return null}};
+const errorId=()=>`E-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`.toUpperCase();
 
 export function sanitizeDiagnosticText(value,max=MAX_TEXT){
   let text=String(value??'');
@@ -48,20 +49,22 @@ function writeEvents(events){
 
 export function diagnosticEvent(type,detail={},level='info'){
   const events=readEvents();
-  events.push({at:now(),sessionId,type:sanitizeDiagnosticText(type,80),level,route:sanitizeDiagnosticText(route,80),detail:sanitizeDiagnosticValue(detail)});
-  writeEvents(events);
+  const entry={at:now(),sessionId,type:sanitizeDiagnosticText(type,80),level,route:sanitizeDiagnosticText(route,80),detail:sanitizeDiagnosticValue(detail)};
+  events.push(entry);writeEvents(events);return entry;
 }
 
-export function diagnosticBreadcrumb(action,detail={}){diagnosticEvent(`breadcrumb.${action}`,detail,'info')}
+export function diagnosticBreadcrumb(action,detail={}){return diagnosticEvent(`breadcrumb.${action}`,detail,'info')}
 
 export function diagnosticError(kind,error,context={}){
-  const e=error instanceof Error?error:new Error(String(error??'Unknown error'));
+  const e=error instanceof Error?error:new Error(String(error??'Unknown error')),id=errorId();
   diagnosticEvent(`error.${kind}`,{
+    errorId:id,
     name:e.name||'Error',
     message:sanitizeDiagnosticText(e.message||'Unknown error'),
     stack:sanitizeDiagnosticText(e.stack||'',1200),
     context
   },'error');
+  return id;
 }
 
 export function setDiagnosticRoute(next){
@@ -82,12 +85,13 @@ export function installDiagnostics(){
 
 export function clearDiagnostics(){memoryEvents=[];try{store()?.removeItem(STORAGE_KEY);return true}catch{return false}}
 export function diagnosticEvents(){return readEvents().map(x=>structuredClone(x))}
-export function diagnosticSummary(){const events=readEvents();return{events:events.length,errors:events.filter(e=>e.level==='error').length,lastAt:events.at(-1)?.at||null}}
+export function diagnosticSummary(){const events=readEvents();return{events:events.length,errors:events.filter(e=>e.level==='error').length,lastAt:events.at(-1)?.at||null,lastErrorId:[...events].reverse().find(e=>e.level==='error')?.detail?.errorId||null}}
 
 function browserSummary(){
   const ua=globalThis.navigator?.userAgent||'';
-  const match=ua.match(/(Firefox|Edg|Chrome)\/(\d+)/)||ua.match(/Version\/(\d+).*(Safari)/);
-  return match?`${match[1]==='Version'?match[2]:match[1]} ${match[1]==='Version'?match[1]:match[2]}`:'unknown';
+  const direct=ua.match(/(Firefox|Edg|Chrome)\/(\d+)/);
+  if(direct)return`${direct[1]} ${direct[2]}`;
+  const safari=ua.match(/Version\/(\d+).*Safari/);return safari?`Safari ${safari[1]}`:'unknown';
 }
 
 export function buildDiagnosticSnapshot(storageSummary={}){
@@ -96,7 +100,7 @@ export function buildDiagnosticSnapshot(storageSummary={}){
   const networkFailures=events.filter(e=>e.type.startsWith('network.failure'));
   const snapshot={
     schemaVersion:2,
-    project:{name:'English Worksheet Lab',projectKey:'english-worksheet-lab',appVersion:APP.version,build:APP.build,dataSchemaVersion:APP.stateSchema},
+    project:{name:'English Worksheet Lab',projectKey:PROJECT.key,appVersion:APP.version,build:APP.build,dataSchemaVersion:APP.stateSchema},
     capture:{capturedAt:now(),sessionId,snapshotId:globalThis.crypto?.randomUUID?.()||`snapshot-${Date.now()}`,route,reason:'manual',severity:errors.length?'error':'info'},
     environment:{
       viewport:{width:globalThis.innerWidth??null,height:globalThis.innerHeight??null,devicePixelRatio:globalThis.devicePixelRatio??null},
@@ -104,7 +108,7 @@ export function buildDiagnosticSnapshot(storageSummary={}){
       browserSummary:browserSummary(),
       features:{indexedDB:!!globalThis.indexedDB,pointerEvent:!!globalThis.PointerEvent,clipboard:!!globalThis.navigator?.clipboard,storageEstimate:!!globalThis.navigator?.storage?.estimate}
     },
-    runtime:{initialization:events.filter(e=>e.type.startsWith('init.')).slice(-20),featureFlags:{remoteDiagnostics:false},serviceWorker:!!globalThis.navigator?.serviceWorker?.controller},
+    runtime:{initialization:events.filter(e=>e.type.startsWith('init.')).slice(-20),featureFlags:{remoteDiagnostics:PROJECT.remoteDiagnostics},serviceWorker:!!globalThis.navigator?.serviceWorker?.controller},
     breadcrumbs:events.filter(e=>e.level!=='error'&&!e.type.startsWith('network.failure')).slice(-80),
     errors:errors.slice(-30),networkFailures:networkFailures.slice(-20),
     storage:{available:!!store(),types:['localStorage','IndexedDB'],estimatedUsageBytes:Number(storageSummary.usage)||null,estimatedQuotaBytes:Number(storageSummary.quota)||null,summary:sanitizeDiagnosticValue(storageSummary.summary||{})},
